@@ -14,7 +14,7 @@ export default function CardThread({ postData }: CardThreadProps) {
   const [, forceUpdate] = useReducer((state) => state + 1, 0);
 
   function onClickCard() {
-    navigate(`/detail/${postData.id}`);
+    navigate(`/thread/${postData.id}`);
   }
 
   return (
@@ -64,7 +64,9 @@ export default function CardThread({ postData }: CardThreadProps) {
           <Button variant={'ghost'} display={'flex'} gap={'4px'}>
             <Image src={replyLogoOutline} width={'27px'} />
             <Text>{postData.repliesCount}</Text>
-            <Text>Replies</Text>
+            <Text cursor={'pointer'} onClick={onClickCard}>
+              Replies
+            </Text>
           </Button>
         </Box>
       </Box>
