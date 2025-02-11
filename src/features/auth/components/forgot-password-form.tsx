@@ -1,7 +1,7 @@
 import brandLogo from '@/assets/logo.svg';
 import { Button } from '@/components/ui/button';
 import { toaster } from '@/components/ui/toaster';
-import dummyUsers from '@/utils/fake-datas/user.json';
+import { userDatas } from '@/utils/fake-datas/user';
 import {
   forgotPasswordSchema,
   ForgotPasswordSchemaDTO,
@@ -22,8 +22,8 @@ export default function ForgotPasswordForm(props: BoxProps) {
   });
 
   async function onSubmit(data: ForgotPasswordSchemaDTO) {
-    const user = dummyUsers.find(
-      (dummyUser) => dummyUser.email === watch('email')
+    const user = userDatas.find(
+      (userData) => userData.email === watch('email')
     );
 
     if (!user)

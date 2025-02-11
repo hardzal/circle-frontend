@@ -1,7 +1,7 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Box, BoxProps, Button, Text } from '@chakra-ui/react';
-import { SearchUser } from '../types/search-user';
 import { useReducer } from 'react';
+import { SearchUser } from '../types/search-user';
 
 interface SearchUserCardProps extends BoxProps {
   searchUserData: SearchUser;

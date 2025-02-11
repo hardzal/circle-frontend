@@ -13,27 +13,27 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { loginSchema, LoginSchemaDTO } from '@/utils/schemas/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import dummyUsers from '@/utils/fake-datas/user.json';
+import { userDatas } from '@/utils/fake-datas/user';
 import { toaster } from '@/components/ui/toaster';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/auth';
 
 export default function LoginForm(props: BoxProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<LoginSchemaDTO>({
     mode: 'onChange',
     resolver: zodResolver(loginSchema),
   });
 
+  const setUser = useAuthStore((state) => state.setUser);
+
   const navigate = useNavigate();
 
   async function onSubmit(data: LoginSchemaDTO) {
-    const user = dummyUsers.find(
-      (dummyUser) => dummyUser.email === watch('email')
-    );
+    const user = userDatas.find((userData) => userData.email === data.email);
 
     if (!user)
       return toaster.create({
@@ -41,7 +41,7 @@ export default function LoginForm(props: BoxProps) {
         type: 'error',
       });
 
-    const isPasswordCorrect = user?.password === watch('password');
+    const isPasswordCorrect = user?.password === data.password;
 
     if (!isPasswordCorrect)
       return toaster.create({
@@ -49,12 +49,15 @@ export default function LoginForm(props: BoxProps) {
         type: 'error',
       });
 
+    console.log('data user', user);
+
+    setUser(user);
+
     toaster.create({
       title: 'Login success!',
       type: 'success',
     });
 
-    console.log(data);
     navigate({ pathname: '/' });
 
     // send to backend

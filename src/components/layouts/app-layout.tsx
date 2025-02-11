@@ -1,11 +1,13 @@
-import { isLogin } from '@/utils/fake-datas/session';
 import { Grid, GridItem } from '@chakra-ui/react';
 import { Navigate, Outlet } from 'react-router-dom';
 import LeftBar from './leftbar';
 import RightBar from './rightbar';
 
+import { useAuthStore } from '@/stores/auth';
+
 export default function AppLayout() {
-  if (!isLogin) return <Navigate to={'/login'} />;
+  const username = useAuthStore((state) => state.user.username);
+  if (!username) return <Navigate to={'/login'} />;
 
   return (
     <Grid templateColumns="repeat(4, 1fr)">

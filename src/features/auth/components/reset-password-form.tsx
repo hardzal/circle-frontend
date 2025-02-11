@@ -1,7 +1,7 @@
 import brandLogo from '@/assets/logo.svg';
 import { Button } from '@/components/ui/button';
 import { toaster } from '@/components/ui/toaster';
-import dummyUsers from '@/utils/fake-datas/user.json';
+import { userDatas } from '@/utils/fake-datas/user';
 import {
   resetPasswordSchema,
   ResetPasswordSchemaDTO,
@@ -27,7 +27,7 @@ export default function ResetPasswordForm(props: BoxProps) {
   const email = searchParams.get('email');
 
   async function onSubmit(data: ResetPasswordSchemaDTO) {
-    const user = dummyUsers.find((dummyUser) => dummyUser.email === email);
+    const user = userDatas.find((userData) => userData.email === email);
 
     if (!user)
       return toaster.create({

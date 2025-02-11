@@ -11,6 +11,7 @@ import RegisterPage from './register';
 import ResetPasswordPage from './reset-password';
 import SearchUsers from './search-users';
 import ThreadDetailPage from './thread-detail';
+import CounterPage from './counter';
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: '/reset-password',
         element: <ResetPasswordPage />,
+      },
+      {
+        path: '/testing',
+        element: <CounterPage />,
       },
     ],
   },

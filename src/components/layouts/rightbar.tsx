@@ -1,4 +1,5 @@
-import { userSession } from '@/utils/fake-datas/session';
+import { useAuthStore } from '@/stores/auth';
+// import { userSession } from '@/utils/fake-datas/session';
 import {
   Box,
   BoxProps,
@@ -11,14 +12,14 @@ import {
 
 export default function RightBar(props: BoxProps) {
   const {
+    fullName,
     avatarUrl,
     backgroundUrl,
     followersCount,
     followingsCount,
-    fullName,
     username,
     bio,
-  } = userSession;
+  } = useAuthStore((state) => state.user);
 
   return (
     <Box height={'100vh'} padding={'40px'} {...props}>

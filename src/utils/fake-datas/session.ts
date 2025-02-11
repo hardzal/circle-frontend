@@ -1,4 +1,4 @@
-export const isLogin: boolean = true;
+export const isLogin: boolean = false;
 
 interface UserSession {
   fullName: string;
