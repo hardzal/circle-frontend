@@ -3,6 +3,7 @@ import { Box, BoxProps } from '@chakra-ui/react';
 
 import ProfileSidebar from './profile-sidebar';
 import FollowsSidebar from './follows-sidebar';
+import { useLocation } from 'react-router-dom';
 
 export default function RightBar(props: BoxProps) {
   const {
@@ -14,6 +15,8 @@ export default function RightBar(props: BoxProps) {
     username,
     bio,
   } = useAuthStore((state) => state.user);
+  const { pathname } = useLocation();
+  console.log(pathname);
 
   return (
     <Box
@@ -24,15 +27,17 @@ export default function RightBar(props: BoxProps) {
       top={'0'}
       right={'0'}
     >
-      <ProfileSidebar
-        fullName={fullName}
-        username={username}
-        followersCount={followersCount}
-        followingsCount={followingsCount}
-        backgroundUrl={backgroundUrl}
-        avatarUrl={avatarUrl}
-        bio={bio}
-      />
+      {pathname !== '/profile' && (
+        <ProfileSidebar
+          fullName={fullName}
+          username={username}
+          followersCount={followersCount}
+          followingsCount={followingsCount}
+          backgroundUrl={backgroundUrl}
+          avatarUrl={avatarUrl}
+          bio={bio}
+        />
+      )}
 
       <FollowsSidebar />
     </Box>

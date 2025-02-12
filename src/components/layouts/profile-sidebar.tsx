@@ -21,7 +21,7 @@ export default function ProfileSidebar({
 }: UserProfile) {
   return (
     <>
-      <Card.Root size="sm" backgroundColor={'background'}>
+      <Card.Root size="sm" backgroundColor={'background'} marginBottom={'20px'}>
         <Card.Header>
           <Heading size="2xl">My Profile</Heading>
         </Card.Header>
@@ -37,8 +37,7 @@ export default function ProfileSidebar({
 
           <Box
             display={'flex'}
-            gap={'150px'}
-            alignContent={'space-between'}
+            justifyContent={'space-between'}
             alignItems={'center'}
             zIndex={'10'}
             position={'relative'}

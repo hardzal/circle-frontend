@@ -9,7 +9,7 @@ export default function FollowsSidebar() {
   const [, forceUpdate] = useReducer((state) => state + 1, 0);
 
   return (
-    <Card.Root size="sm" backgroundColor={'background'} marginTop={'20px'}>
+    <Card.Root size="sm" backgroundColor={'background'}>
       <Card.Header marginBottom={'10px'}>
         <Heading size="2xl">Suggested for you</Heading>
       </Card.Header>

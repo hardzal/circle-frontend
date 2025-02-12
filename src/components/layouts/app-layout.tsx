@@ -17,7 +17,6 @@ export default function AppLayout() {
 
       <GridItem
         colSpan={{ base: 4, lg: 2 }}
-        padding={'40px'}
         borderX={'1px solid'}
         borderColor={'outline'}
       >

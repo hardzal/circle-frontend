@@ -23,7 +23,7 @@ export default function CardThread({ postData }: CardThreadProps) {
       gap={'16px'}
       borderBottom={'1px solid'}
       borderColor={'outline'}
-      padding={'16px 0px'}
+      padding={'16px'}
     >
       <Avatar
         name={postData.user.fullName}
