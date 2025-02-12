@@ -1,4 +1,5 @@
 import brandLogo from '@/assets/logo.svg';
+import logoutIcon from '@/assets/icons/logout.svg';
 import { NAV_LINK_MENU } from '@/utils/constants/nav-link-menu';
 import {
   Box,
@@ -30,72 +31,90 @@ export default function LeftBar(props: BoxProps) {
   }
 
   return (
-    <Box height={'100vh'} padding={'40px'} {...props}>
-      <Image src={brandLogo} width={'220px'} padding={'0px 16px'} />
-      <Box
-        marginTop={'22px'}
-        display={'flex'}
-        flexDirection={'column'}
-        gap={'8px'}
-      >
-        {NAV_LINK_MENU.map(({ label, logo, path }, index) => (
-          <ChakraLink
-            asChild
-            display={'flex'}
-            gap={'16px'}
-            alignItems={'center'}
-            padding={'16px 20px'}
-            key={index}
-          >
-            <Link to={path}>
-              <Image
-                src={pathname === path ? logo.fill : logo.outline}
-                width={'27px'}
-              />
-              <Text>{label}</Text>
-            </Link>
-          </ChakraLink>
-        ))}
-
-        <DialogRoot size="lg">
-          <DialogTrigger asChild>
+    <Box
+      display={'flex'}
+      flexDirection={'column'}
+      position={'fixed'}
+      top={'0'}
+      left={'0'}
+    >
+      <Box padding={'40px'} {...props}>
+        <Image src={brandLogo} width={'220px'} padding={'0px 16px'} />
+        <Box
+          marginTop={'22px'}
+          display={'flex'}
+          flexDirection={'column'}
+          gap={'8px'}
+        >
+          {NAV_LINK_MENU.map(({ label, logo, path }, index) => (
             <ChakraLink
               asChild
               display={'flex'}
               gap={'16px'}
               alignItems={'center'}
               padding={'16px 20px'}
+              key={index}
             >
-              <Button
-                backgroundColor={'brand'}
-                color={'white'}
-                borderRadius={'50px'}
-              >
-                Create Post
-              </Button>
+              <Link to={path}>
+                <Image
+                  src={pathname === path ? logo.fill : logo.outline}
+                  width={'27px'}
+                />
+                <Text>{label}</Text>
+              </Link>
             </ChakraLink>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogBody marginTop={'35px'}>
-              <Textarea placeholder="What is happening?!" />
-            </DialogBody>
-            <DialogFooter display={'flex'} flex={'content'}>
-              <Button
-                variant={'ghost'}
-                onClick={onClickFile}
-                disabled
-                cursor={'disabled'}
-              >
-                <Image src={galleryAddLogo} width={'27px'} />
-              </Button>
+          ))}
 
-              <Button backgroundColor={'brand'} disabled color={'white'}>
-                Post
-              </Button>
-            </DialogFooter>
-            <DialogCloseTrigger />
-          </DialogContent>
-        </DialogRoot>
+          <DialogRoot size="lg">
+            <DialogTrigger asChild>
+              <ChakraLink
+                asChild
+                display={'flex'}
+                gap={'16px'}
+                alignItems={'center'}
+                padding={'16px 20px'}
+              >
+                <Button
+                  backgroundColor={'brand'}
+                  color={'white'}
+                  borderRadius={'50px'}
+                >
+                  Create Post
+                </Button>
+              </ChakraLink>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogBody marginTop={'35px'}>
+                <Textarea placeholder="What is happening?!" />
+              </DialogBody>
+              <DialogFooter display={'flex'} flex={'content'}>
+                <Button
+                  variant={'ghost'}
+                  onClick={onClickFile}
+                  disabled
+                  cursor={'disabled'}
+                >
+                  <Image src={galleryAddLogo} width={'27px'} />
+                </Button>
+
+                <Button backgroundColor={'brand'} disabled color={'white'}>
+                  Post
+                </Button>
+              </DialogFooter>
+              <DialogCloseTrigger />
+            </DialogContent>
+          </DialogRoot>
+        </Box>
+      </Box>
+      <Box
+        display={'flex'}
+        gap={'10px'}
+        position={'relative'}
+        bottom={'-42vh'}
+        padding={'20px'}
+      >
+        <Image src={logoutIcon} width={'30px'} />
+        <Text>Logout</Text>
       </Box>
     </Box>
   );

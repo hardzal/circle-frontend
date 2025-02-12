@@ -10,6 +10,10 @@ import {
   Image,
 } from '@chakra-ui/react';
 
+import { Avatar } from '@/components/ui/avatar';
+import { searchUserDatas } from '@/utils/fake-datas/search-users';
+import { useReducer } from 'react';
+
 export default function RightBar(props: BoxProps) {
   const {
     fullName,
@@ -21,8 +25,19 @@ export default function RightBar(props: BoxProps) {
     bio,
   } = useAuthStore((state) => state.user);
 
+  const dataUser = searchUserDatas.slice(0, 5);
+
+  const [, forceUpdate] = useReducer((state) => state + 1, 0);
+
   return (
-    <Box height={'100vh'} padding={'40px'} {...props}>
+    <Box
+      height={'100vh'}
+      padding={'40px'}
+      {...props}
+      position={'fixed'}
+      top={'0'}
+      right={'0'}
+    >
       <Card.Root size="sm" backgroundColor={'background'}>
         <Card.Header>
           <Heading size="2xl">My Profile</Heading>
@@ -86,10 +101,43 @@ export default function RightBar(props: BoxProps) {
       </Card.Root>
 
       <Card.Root size="sm" backgroundColor={'background'} marginTop={'20px'}>
-        <Card.Header>
+        <Card.Header marginBottom={'10px'}>
           <Heading size="2xl">Suggested for you</Heading>
         </Card.Header>
-        <Card.Body></Card.Body>
+        <Card.Body>
+          {dataUser.map((searchUserData, index) => (
+            <Box
+              display={'flex'}
+              gap={'20px'}
+              alignItems={'center'}
+              marginBottom={'20px'}
+              key={index}
+            >
+              <Avatar
+                name={searchUserData.fullName}
+                src={searchUserData.avatarUrl}
+                shape="full"
+                size="lg"
+              />
+              <Box display={'flex'} flexDirection={'column'} flex={'2'}>
+                <Text>{searchUserData.fullName}</Text>
+                <Text color={'secondary'}>@{searchUserData.username}</Text>
+              </Box>
+              <Button
+                variant={'outline'}
+                flex={'1'}
+                border={'1px solid white'}
+                borderRadius={'30px'}
+                onClick={() => {
+                  searchUserData.isFollowed = !searchUserData.isFollowed;
+                  forceUpdate();
+                }}
+              >
+                {searchUserData.isFollowed ? 'Unfollow' : 'Follow'}
+              </Button>
+            </Box>
+          ))}
+        </Card.Body>
       </Card.Root>
     </Box>
   );
