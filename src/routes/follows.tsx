@@ -1,6 +1,4 @@
 import FollowsSidebar from '@/components/layouts/follows-sidebar';
-import CardThread from '@/features/home/components/card-thread';
-import { postDatas } from '@/utils/fake-datas/posts';
 import { Box, Text } from '@chakra-ui/react';
 
 export default function FollowsPage() {
