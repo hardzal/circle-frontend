@@ -4,20 +4,16 @@ import { Box, BoxProps } from '@chakra-ui/react';
 import ProfileSidebar from './profile-sidebar';
 import FollowsSidebar from './follows-sidebar';
 import { useLocation } from 'react-router-dom';
+// import { profileLogo } from '@/assets/icons';
 
 export default function RightBar(props: BoxProps) {
   const {
-    fullName,
-    avatarUrl,
-    backgroundUrl,
-    followersCount,
-    followingsCount,
     username,
-    bio,
+    profile: { fullName, bio, bannerUrl, avatarUrl },
   } = useAuthStore((state) => state.user);
   const { pathname } = useLocation();
   console.log(pathname);
-
+  const profileData = { fullName, bio, bannerUrl, avatarUrl };
   return (
     <Box
       height={'100vh'}
@@ -28,15 +24,7 @@ export default function RightBar(props: BoxProps) {
       right={'0'}
     >
       {pathname !== '/profile' && (
-        <ProfileSidebar
-          fullName={fullName}
-          username={username}
-          followersCount={followersCount}
-          followingsCount={followingsCount}
-          backgroundUrl={backgroundUrl}
-          avatarUrl={avatarUrl}
-          bio={bio}
-        />
+        <ProfileSidebar username={username} profile={profileData} />
       )}
 
       <FollowsSidebar />

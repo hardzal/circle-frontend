@@ -1,5 +1,9 @@
-import { UserEntity } from '@/entities/user.entities';
+import { UserEntity } from '@/entities/user.entity';
 
-export type RegisterDTO = Pick<UserEntity, 'fullName' | 'email' | 'password'>;
+type User = UserEntity & {
+  fullName: string;
+};
 
-export type LoginDTO = Pick<UserEntity, 'email' | 'password'>;
+export type RegisterDTO = Pick<User, 'fullName' | 'email' | 'password'>;
+
+export type LoginDTO = Pick<User, 'email' | 'password'>;

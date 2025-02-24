@@ -48,7 +48,8 @@
 
 # Authentication (Login/Register/Forgot/Reset Password)
 
-- [ ] Register: Form untuk mendaftar akun baru.
-- [ ] Login: Form untuk masuk ke akun pengguna.
-- [ ] Forgot Password: Mengirim link reset password ke email.
-- [ ] Reset Password: Form untuk mengganti password
+- [x] Register: Form untuk mendaftar akun baru.
+- [x] Login: Form untuk masuk ke akun pengguna.
+- [x] Forgot Password: Mengirim link reset password ke email.
+- [x] Reset Password: Form untuk mengganti password
+- [ ] Verifikasi email

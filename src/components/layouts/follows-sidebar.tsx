@@ -3,13 +3,13 @@ import { Avatar } from '@/components/ui/avatar';
 import { searchUserDatas } from '@/utils/fake-datas/search-users';
 import { useReducer } from 'react';
 
-export default function FollowsSidebar() {
+export default function FollowsSidebar({ background = 'background' }) {
   const dataUser = searchUserDatas.slice(0, 5);
 
   const [, forceUpdate] = useReducer((state) => state + 1, 0);
 
   return (
-    <Card.Root size="sm" backgroundColor={'background'}>
+    <Card.Root size="sm" backgroundColor={background}>
       <Card.Header marginBottom={'10px'}>
         <Heading size="2xl">Suggested for you</Heading>
       </Card.Header>

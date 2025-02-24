@@ -13,10 +13,11 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { loginSchema, LoginSchemaDTO } from '@/utils/schemas/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { userDatas } from '@/utils/fake-datas/user';
 import { toaster } from '@/components/ui/toaster';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
+import { api } from '@/libs/api';
+import { isAxiosError } from 'axios';
 
 export default function LoginForm(props: BoxProps) {
   const {
@@ -28,37 +29,34 @@ export default function LoginForm(props: BoxProps) {
     resolver: zodResolver(loginSchema),
   });
 
-  const setUser = useAuthStore((state) => state.setUser);
+  const { setUser } = useAuthStore();
 
   const navigate = useNavigate();
 
   async function onSubmit(data: LoginSchemaDTO) {
-    const user = userDatas.find((userData) => userData.email === data.email);
+    try {
+      const response = await api.post('/auth/login', data);
+      setUser(response.data.data.user);
+      localStorage.setItem('token', response.data.data.token);
 
-    if (!user)
-      return toaster.create({
-        title: 'Email/password is wrong!',
-        type: 'error',
+      toaster.create({
+        title: response.data.message,
+        type: 'success',
       });
-
-    const isPasswordCorrect = user?.password === data.password;
-
-    if (!isPasswordCorrect)
-      return toaster.create({
-        title: 'Email/password is wrong!',
-        type: 'error',
-      });
-
-    console.log('data user', user);
-
-    setUser(user);
+      navigate({ pathname: '/' });
+    } catch (error) {
+      if (isAxiosError(error)) {
+        return toaster.create({
+          title: error.response?.data.message,
+          type: 'error',
+        });
+      }
+    }
 
     toaster.create({
-      title: 'Login success!',
-      type: 'success',
+      title: 'Something went wrong!',
+      type: 'error',
     });
-
-    navigate({ pathname: '/' });
 
     // send to backend
     // await axios.post("https://backend-circle.com/api/v1/login", data)

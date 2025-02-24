@@ -10,7 +10,7 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -21,13 +21,22 @@ import {
 } from '@/components/ui/dialog';
 import { galleryAddLogo } from '@/assets/icons';
 import { useRef } from 'react';
+import { useAuthStore } from '@/stores/auth';
 
 export default function LeftBar(props: BoxProps) {
   const { pathname } = useLocation();
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
 
   function onClickFile() {
     inputFileRef?.current?.click();
+  }
+
+  function onLogout() {
+    logout();
+    localStorage.removeItem('token');
+    navigate('/login');
   }
 
   return (
@@ -113,8 +122,10 @@ export default function LeftBar(props: BoxProps) {
         bottom={'-42vh'}
         padding={'20px'}
       >
-        <Image src={logoutIcon} width={'30px'} />
-        <Text>Logout</Text>
+        <Button onClick={onLogout} variant={'ghost'}>
+          <Image src={logoutIcon} width={'30px'} />
+          <Text>Logout</Text>
+        </Button>
       </Box>
     </Box>
   );

@@ -1,24 +1,16 @@
 import { Box, Button, Card, Heading, Text, Image } from '@chakra-ui/react';
 
 interface UserProfile {
-  fullName: string;
   username: string;
-  followersCount: number;
-  followingsCount: number;
-  avatarUrl: string;
-  backgroundUrl: string;
-  bio?: string;
+  profile: {
+    fullName: string;
+    avatarUrl?: string;
+    bannerUrl?: string;
+    bio?: string;
+  };
 }
 
-export default function ProfileSidebar({
-  fullName,
-  username,
-  followersCount,
-  followingsCount,
-  avatarUrl,
-  backgroundUrl,
-  bio,
-}: UserProfile) {
+export default function ProfileSidebar({ username, profile }: UserProfile) {
   return (
     <>
       <Card.Root size="sm" backgroundColor={'background'} marginBottom={'20px'}>
@@ -27,7 +19,7 @@ export default function ProfileSidebar({
         </Card.Header>
         <Card.Body>
           <Box
-            backgroundImage={`url("${backgroundUrl}")`}
+            backgroundImage={`url("${profile.bannerUrl}")`}
             padding={'15px'}
             borderRadius={'lg'}
             height={'100px'}
@@ -44,14 +36,17 @@ export default function ProfileSidebar({
             bottom={'30px'}
           >
             <Image
-              src={avatarUrl}
+              src={
+                profile.avatarUrl ||
+                `https://api.dicebear.com/9.x/notionists/svg?seed=${profile.fullName}`
+              }
               boxSize="80px"
               borderRadius="full"
               backgroundColor={'background'}
               border={'1px solid background'}
               fit="cover"
               marginLeft={'15px'}
-              alt={fullName}
+              alt={profile.fullName}
             />
 
             <Button
@@ -65,16 +60,16 @@ export default function ProfileSidebar({
           </Box>
 
           <Box display={'flex'} flexDirection={'column'} gap={'5px'}>
-            <Text>{fullName}</Text>
+            <Text>{profile.fullName}</Text>
             <Text color={'secondary'}>@{username}</Text>
-            <Text>{bio}</Text>
+            <Text>{profile.bio}</Text>
             <Box display={'flex'} gap={'5px'}>
               <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
-                <Text fontWeight={'bold'}>{followingsCount}</Text>
+                <Text fontWeight={'bold'}>{200}</Text>
                 <Text color={'secondary'}>Following</Text>
               </Box>
               <Box display={'flex'} gap={'5px'}>
-                <Text fontWeight={'bold'}>{followersCount}</Text>
+                <Text fontWeight={'bold'}>{200}</Text>
                 <Text color={'secondary'}>Followers</Text>
               </Box>
             </Box>
