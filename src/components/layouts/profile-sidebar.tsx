@@ -19,7 +19,7 @@ export default function ProfileSidebar({ username, profile }: UserProfile) {
         </Card.Header>
         <Card.Body>
           <Box
-            backgroundImage={`url("${profile.bannerUrl}")`}
+            backgroundImage={`url("${profile.bannerUrl || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}  ")`}
             padding={'15px'}
             borderRadius={'lg'}
             height={'100px'}

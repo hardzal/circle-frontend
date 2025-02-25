@@ -22,6 +22,7 @@ import {
 import { galleryAddLogo } from '@/assets/icons';
 import { useRef } from 'react';
 import { useAuthStore } from '@/stores/auth';
+import Cookies from 'js-cookie';
 
 export default function LeftBar(props: BoxProps) {
   const { pathname } = useLocation();
@@ -35,7 +36,8 @@ export default function LeftBar(props: BoxProps) {
 
   function onLogout() {
     logout();
-    localStorage.removeItem('token');
+    // localStorage.removeItem('token');
+    Cookies.remove('token');
     navigate('/login');
   }
 

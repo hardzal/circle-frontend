@@ -1,13 +1,15 @@
 import brandLogo from '@/assets/logo.svg';
 import { Button } from '@/components/ui/button';
 import { toaster } from '@/components/ui/toaster';
-import { userDatas } from '@/utils/fake-datas/user';
+import { api } from '@/libs/api';
 import {
   forgotPasswordSchema,
   ForgotPasswordSchemaDTO,
 } from '@/utils/schemas/auth.schema';
 import { Box, BoxProps, Field, Image, Input, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { isAxiosError } from 'axios';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export default function ForgotPasswordForm(props: BoxProps) {
@@ -15,29 +17,38 @@ export default function ForgotPasswordForm(props: BoxProps) {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<ForgotPasswordSchemaDTO>({
     mode: 'onChange',
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  async function onSubmit(data: ForgotPasswordSchemaDTO) {
-    const user = userDatas.find(
-      (userData) => userData.email === watch('email')
-    );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    if (!user)
-      return toaster.create({
-        title: 'Email/password is wrong!',
+  async function onSubmit({ email }: ForgotPasswordSchemaDTO) {
+    try {
+      setIsLoading(true);
+      const response = await api.post('/auth/forgot-password', { email });
+
+      toaster.create({
+        title: response.data.message,
+        type: 'success',
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      if (isAxiosError(error)) {
+        return toaster.create({
+          title: error.response?.data.message,
+          type: 'error',
+        });
+      }
+
+      toaster.create({
+        title: 'Something went wrong!',
         type: 'error',
       });
+    }
 
-    toaster.create({
-      title: 'Reset password link has been sent to your email! Check it out!',
-      type: 'success',
-    });
-
-    console.log(data);
     // send to backend
     // await axios.post("https://backend-circle.com/api/v1/forgot-password", data)
   }
@@ -58,8 +69,13 @@ export default function ForgotPasswordForm(props: BoxProps) {
           <Input placeholder="Email" {...register('email')} />
           <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
         </Field.Root>
-        <Button backgroundColor={'brand'} color={'white'} type="submit">
-          Send
+        <Button
+          backgroundColor={'brand'}
+          color={'white'}
+          type="submit"
+          disabled={isLoading ? true : false}
+        >
+          {isLoading ? 'Loading...' : 'Send'}
         </Button>
       </form>
     </Box>

@@ -22,14 +22,9 @@ export const forgotPasswordSchema = z.object({
 
 export type ForgotPasswordSchemaDTO = z.infer<typeof forgotPasswordSchema>;
 
-export const resetPasswordSchema = z
-  .object({
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match!",
-    path: ['password'],
-  });
+export const resetPasswordSchema = z.object({
+  oldPassword: z.string().min(8),
+  newPassword: z.string().min(8),
+});
 
 export type ResetPasswordSchemaDTO = z.infer<typeof resetPasswordSchema>;
