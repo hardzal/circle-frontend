@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const createLikeSchema = z.object({
-  threadIn: z.string().uuid(),
+  threadId: z.string().uuid(),
 });
 
 export type CreateLikeSchemaDTO = z.infer<typeof createLikeSchema>;

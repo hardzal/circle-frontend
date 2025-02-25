@@ -1,6 +1,5 @@
 import { Avatar } from '@/components/ui/avatar';
 import { Box, BoxProps, Button, Text } from '@chakra-ui/react';
-import { useReducer } from 'react';
 import { SearchUser } from '../types/search-user';
 
 interface SearchUserCardProps extends BoxProps {
@@ -11,8 +10,6 @@ export default function SearchUserCard({
   searchUserData,
   ...props
 }: SearchUserCardProps) {
-  const [, forceUpdate] = useReducer((state) => state + 1, 0);
-
   return (
     <Box
       display={'flex'}
@@ -23,8 +20,8 @@ export default function SearchUserCard({
       {...props}
     >
       <Avatar
-        name={searchUserData.fullName}
-        src={searchUserData.avatarUrl}
+        name={searchUserData.profile.fullName}
+        src={searchUserData.profile.avatarUrl}
         shape="full"
         size="full"
         width={'50px'}
@@ -32,19 +29,20 @@ export default function SearchUserCard({
       />
 
       <Box display={'flex'} flexDirection={'column'} gap={'4px'} flex={'10'}>
-        <Text fontWeight={'bold'}>{searchUserData.fullName}</Text>
+        <Text fontWeight={'bold'}>{searchUserData.profile.fullName}</Text>
         <Text color={'secondary'}>@{searchUserData.username}</Text>
-        <Text>{searchUserData.bio}</Text>
+        <Text>{searchUserData.profile.bio}</Text>
       </Box>
       <Button
         variant={'outline'}
         flex={'1'}
         onClick={() => {
-          searchUserData.isFollowed = !searchUserData.isFollowed;
-          forceUpdate();
+          // searchUserData.isFollowed = !searchUserData.isFollowed;
+          // forceUpdate();
         }}
       >
-        {searchUserData.isFollowed ? 'Unfollow' : 'Follow'}
+        {/* {searchUserData.isFollowed ? 'Unfollow' : 'Follow'} */}
+        Follow
       </Button>
     </Box>
   );

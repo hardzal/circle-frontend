@@ -7,47 +7,76 @@ import {
   createThreadSchema,
   CreateThreadSchemaDTO,
 } from '@/utils/schemas/thread.schema';
-import { Box, Button, Field, Image, Input, Textarea } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Field,
+  Image,
+  Input,
+  Spinner,
+  Textarea,
+} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+interface ThreadResponse {
+  message: string;
+  data: {
+    id: string;
+    content: string;
+    imageUrl: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
 export default function CreateThread() {
   const { fullName, avatarUrl } = userSession;
   const inputFileRef = useRef<HTMLInputElement | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [previewURL, setPreviewURL] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<CreateThreadSchemaDTO>({
     mode: 'onChange',
     resolver: zodResolver(createThreadSchema),
   });
 
-  const { ref: registerImagesRef, ...resRegisterImages } = register('images');
+  const {
+    ref: registerImagesRef,
+    onChange: registerImagesOnChange,
+    ...restRegisterImages
+  } = register('images');
+
+  const queryClient = useQueryClient();
 
   function onClickFile() {
     inputFileRef?.current?.click();
   }
 
-  async function onSubmit(data: CreateThreadSchemaDTO) {
-    try {
-      setIsLoading(true);
+  const { isPending, mutateAsync } = useMutation<
+    ThreadResponse,
+    Error,
+    CreateThreadSchemaDTO
+  >({
+    mutationKey: ['create-threads'],
+    mutationFn: async (data: CreateThreadSchemaDTO) => {
       const formData = new FormData();
       formData.append('content', data.content);
       formData.append('images', data.images[0]);
 
-      const response = await api.post('/threads', formData);
+      const response = await api.post<ThreadResponse>(`/threads`, formData);
 
-      toaster.create({
-        title: response.data.message,
-        type: 'success',
-      });
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
+      return response.data;
+    },
+
+    onError: (error) => {
       if (isAxiosError(error)) {
         return toaster.create({
           title: error.response?.data.message,
@@ -59,6 +88,32 @@ export default function CreateThread() {
         title: 'Something went wrong!',
         type: 'error',
       });
+    },
+
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
+        queryKey: ['threads'],
+      });
+
+      toaster.create({
+        title: data.message,
+        type: 'success',
+      });
+    },
+  });
+
+  async function onSubmit(data: CreateThreadSchemaDTO) {
+    await mutateAsync(data);
+    reset();
+    setPreviewURL('');
+  }
+
+  function handlePreview(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+
+      setPreviewURL(url);
     }
   }
 
@@ -71,41 +126,62 @@ export default function CreateThread() {
         borderBottom={'1px solid'}
         borderBottomColor={'outline'}
         padding={'20px 0px'}
+        flexDirection={'column'}
       >
-        <Avatar
-          name={fullName}
-          src={avatarUrl}
-          shape="full"
-          size="full"
-          width={'50px'}
-          height={'50px'}
-        />
-        <Field.Root invalid={!!errors.content?.message}>
-          <Textarea placeholder="What is happening?" {...register('content')} />
-          <Field.ErrorText>{errors.content?.message}</Field.ErrorText>
-        </Field.Root>
-
-        <Button variant={'ghost'} onClick={onClickFile}>
-          <Image src={galleryAddLogo} width={'27px'} />
-        </Button>
-        <Input
-          type={'file'}
-          hidden
-          ref={(e) => {
-            registerImagesRef(e);
-            inputFileRef.current = e;
-          }}
-          {...resRegisterImages}
-        />
-
-        <Button
-          backgroundColor={'brand'}
-          color={'white'}
-          type="submit"
-          disabled={isLoading ? true : false}
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          gap={'20px'}
+          padding={'20px 0px'}
         >
-          {isLoading ? 'Loading...' : 'Post'}
-        </Button>
+          <Avatar
+            name={fullName}
+            src={avatarUrl}
+            shape="full"
+            size="full"
+            width={'50px'}
+            height={'50px'}
+          />
+          <Field.Root invalid={!!errors.content?.message}>
+            <Textarea
+              placeholder="What is happening?"
+              {...register('content')}
+            />
+            <Field.ErrorText>{errors.content?.message}</Field.ErrorText>
+          </Field.Root>
+
+          <Button variant={'ghost'} onClick={onClickFile} type="submit">
+            <Image src={galleryAddLogo} width={'27px'} />
+          </Button>
+          <Input
+            type={'file'}
+            hidden
+            onChange={(e) => {
+              handlePreview(e);
+              registerImagesOnChange(e);
+            }}
+            ref={(e) => {
+              registerImagesRef(e);
+              inputFileRef.current = e;
+            }}
+            {...restRegisterImages}
+          />
+
+          <Button
+            backgroundColor={'brand'}
+            color={'white'}
+            type="submit"
+            disabled={isPending ? true : false}
+          >
+            {isPending ? <Spinner /> : 'Post'}
+          </Button>
+        </Box>
+        <Image
+          objectFit={'contain'}
+          maxHeight={'300px'}
+          maxWidth={'300px'}
+          src={previewURL ?? ''}
+        />
       </Box>
     </form>
   );

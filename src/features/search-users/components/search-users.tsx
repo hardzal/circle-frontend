@@ -1,35 +1,37 @@
 import { searchLogoOutline } from '@/assets/icons';
 import { InputGroup } from '@/components/ui/input-group';
-import { searchUserDatas } from '@/utils/fake-datas/search-users';
-import { Box, Image, Input } from '@chakra-ui/react';
+import { Box, Image, Input, Spinner } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import SearchUserCard from './search-user-card';
-import UserCardSkeleton from '@/components/skeletons/user-card-skeleton';
 import { SearchUser } from '../types/search-user';
+import { api } from '@/libs/api';
+import { useQuery } from '@tanstack/react-query';
 
 export default function SearchUsers() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>('');
   const [searchTextDebounced] = useDebounce(searchText, 500);
-  const [searchUserDataInterval, setSearchUserDataInterval] = useState<
-    SearchUser[]
-  >([]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchText(e.target.value);
   }
 
-  function getSearchUserDatas() {
-    setTimeout(() => {
-      setSearchUserDataInterval(searchUserDatas);
-      setIsLoading(false);
-    }, 1500);
-  }
+  const {
+    data: users,
+    isLoading,
+    refetch,
+  } = useQuery<SearchUser[]>({
+    queryKey: ['search-users'],
+    queryFn: async () => {
+      const response = await api.get(`/users?search=${searchTextDebounced}`);
+
+      return response.data;
+    },
+  });
 
   useEffect(() => {
-    getSearchUserDatas();
-  }, []);
+    refetch();
+  }, [searchTextDebounced, refetch]);
 
   return (
     <Box>
@@ -47,24 +49,15 @@ export default function SearchUsers() {
         />
       </InputGroup>
 
-      {isLoading &&
-        Array(searchUserDatas.length)
-          .fill(0)
-          .map((_, index) => <UserCardSkeleton key={index} />)}
-
-      {searchUserDataInterval
-        .filter((searchUserData) =>
-          searchUserData.fullName
-            .toLowerCase()
-            .trim()
-            .includes(searchTextDebounced.toLowerCase().trim())
-        )
-        .map((searchUserData) => (
-          <SearchUserCard
-            searchUserData={searchUserData}
-            key={searchUserData.id}
-          />
-        ))}
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          {users?.map((user) => {
+            <SearchUserCard searchUserData={user} key={user.id} />;
+          })}
+        </>
+      )}
     </Box>
   );
 }
