@@ -15,6 +15,8 @@ import { Link } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toaster } from '@/components/ui/toaster';
 import { useNavigate } from 'react-router-dom';
+import { api } from '@/libs/api';
+import { isAxiosError } from 'axios';
 // import axios from 'axios'
 
 export default function RegisterForm(props: BoxProps) {
@@ -30,14 +32,30 @@ export default function RegisterForm(props: BoxProps) {
   const navigate = useNavigate();
 
   async function onSubmit(data: RegisterSchemaDTO) {
-    toaster.create({
-      title: 'Register success!',
-      type: 'success',
-    });
+    try {
+      const response = await api.post('/auth/register', data);
+      toaster.create({
+        title: response.data.message,
+        type: 'success',
+      });
+      navigate({ pathname: '/login' });
+    } catch (error) {
+      if (isAxiosError(error)) {
+        return toaster.create({
+          title: error.response?.data.message,
+          type: 'error',
+        });
+      }
 
-    console.log(data);
-    navigate({ pathname: '/login' });
-    // send to backend
+      toaster.create({
+        title: 'Something went wrong!',
+        type: 'error',
+      });
+    }
+
+    // console.log(data);
+    // navigate({ pathname: '/login' });
+    // // send to backend
     // await axios.post("https://backend-circle.com/api/v1/register", data)
   }
 
@@ -56,6 +74,10 @@ export default function RegisterForm(props: BoxProps) {
         <Field.Root invalid={!!errors.fullName?.message}>
           <Input placeholder="Full Name" {...register('fullName')} />
           <Field.ErrorText>{errors.fullName?.message}</Field.ErrorText>
+        </Field.Root>
+        <Field.Root invalid={!!errors.username?.message}>
+          <Input placeholder="Username" {...register('username')} />
+          <Field.ErrorText>{errors.username?.message}</Field.ErrorText>
         </Field.Root>
         <Field.Root invalid={!!errors.email?.message}>
           <Input placeholder="Email" {...register('email')} />

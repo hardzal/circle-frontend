@@ -12,10 +12,11 @@ export type Reply = {
   createdAt: Date;
 };
 
-export type Post = {
+export type Thread = {
   id: string;
   user: UserPost;
   content: string;
+  Images: string;
   likesCount: number;
   repliesCount: number;
   replies?: Reply[];

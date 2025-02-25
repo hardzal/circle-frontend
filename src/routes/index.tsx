@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         element: <ProfilePage />,
       },
       {
-        path: '/detail/:id',
+        path: '/thread/:id',
         element: <ThreadDetailPage />,
       },
     ],

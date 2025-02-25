@@ -12,7 +12,7 @@ export default function CardReply({ replyData }: CardReplyProps) {
   const navigate = useNavigate();
 
   function onClickCard() {
-    navigate(`/detail/${replyData.id}`);
+    navigate(`/thread/${replyData.id}`);
   }
 
   return (

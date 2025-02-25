@@ -9,6 +9,7 @@ interface CardThreadDetailProps extends BoxProps {
 }
 
 export default function CardThreadDetail({ postData }: CardThreadDetailProps) {
+  console.info(postData);
   return (
     <Box
       display={'flex'}
