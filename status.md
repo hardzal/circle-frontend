@@ -14,7 +14,7 @@
 
 # Base (Beranda/Timeline)
 
-- [ ] Thread Feed: Menampilkan daftar postingan dari pengguna yang diikuti.
+- [x] Thread Feed: Menampilkan daftar postingan dari pengguna yang diikuti.
 - [ ] CreateThread: Membuat postingan baru (teks, gambar, atau video).
 - [ ] Like & Reply: Fitur untuk menyukai dan mengomentari postingan.
 - [ ] Search Bar: Mencari postingan atau pengguna.

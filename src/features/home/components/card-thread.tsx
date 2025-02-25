@@ -40,7 +40,10 @@ export default function CardThread({ threadData }: CardThreadProps) {
           <Text fontWeight={'bold'}>{threadData.user.fullName}</Text>
           <Text color={'secondary'}>@{threadData.user.username}</Text>
           <Text color={'secondary'}>•</Text>
-          <Text color={'secondary'}>{threadData.createdAt.getHours()}h</Text>
+          <Text color={'secondary'}>
+            {' '}
+            {new Date(threadData.createdAt).getHours()}h h
+          </Text>
         </Box>
         <Text cursor={'pointer'} onClick={onClickCard}>
           {threadData.content}
