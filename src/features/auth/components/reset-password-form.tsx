@@ -1,73 +1,22 @@
 import brandLogo from '@/assets/logo.svg';
 import { Button } from '@/components/ui/button';
-import { toaster } from '@/components/ui/toaster';
-import { api } from '@/libs/api';
 import {
-  resetPasswordSchema,
-  ResetPasswordSchemaDTO,
-} from '@/utils/schemas/auth.schema';
-import { Box, BoxProps, Field, Image, Input, Text } from '@chakra-ui/react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { isAxiosError } from 'axios';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+  Box,
+  BoxProps,
+  Field,
+  Image,
+  Input,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
+
+import { usePasswordForm } from '../hooks/use-password-form';
 
 export default function ResetPasswordForm(props: BoxProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ResetPasswordSchemaDTO>({
-    mode: 'all',
-    resolver: zodResolver(resetPasswordSchema),
-  });
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const token = searchParams.get('item');
-
-  async function onSubmit({
-    oldPassword,
-    newPassword,
-  }: ResetPasswordSchemaDTO) {
-    setIsLoading(true);
-
-    try {
-      setIsLoading(true);
-      const response = await api.post(
-        '/auth/reset-password',
-        { oldPassword, newPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toaster.create({
-        title: response.data.message,
-        type: 'success',
-      });
-      navigate({ pathname: '/login' });
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      if (isAxiosError(error)) {
-        return toaster.create({
-          title: error.response?.data.message,
-          type: 'error',
-        });
-      }
-
-      toaster.create({
-        title: 'Something went wrong!',
-        type: 'error',
-      });
-    }
-    // send to backend
-    // await axios.post("https://backend-circle.com/api/v1/forgot-password", data)
-  }
+  const { errors, handleSubmit, isPending, onSubmit, register } =
+    usePasswordForm();
+  // send to backend
+  // await axios.post("https://backend-circle.com/api/v1/forgot-password", data)
 
   console.log('errors', errors);
 
@@ -103,9 +52,9 @@ export default function ResetPasswordForm(props: BoxProps) {
           backgroundColor={'brand'}
           color={'white'}
           type="submit"
-          disabled={isLoading ? true : false}
+          disabled={isPending ? true : false}
         >
-          {isLoading ? 'Loading...' : 'Send'}
+          {isPending ? <Spinner /> : 'Send'}
         </Button>
       </form>
     </Box>

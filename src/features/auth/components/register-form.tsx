@@ -1,6 +1,5 @@
 import brandLogo from '@/assets/logo.svg';
 import { Button } from '@/components/ui/button';
-import { registerSchema, RegisterSchemaDTO } from '@/utils/schemas/auth.schema';
 import {
   Box,
   BoxProps,
@@ -8,56 +7,20 @@ import {
   Field,
   Image,
   Input,
+  Spinner,
   Text,
 } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toaster } from '@/components/ui/toaster';
-import { useNavigate } from 'react-router-dom';
-import { api } from '@/libs/api';
-import { isAxiosError } from 'axios';
+import { useRegisterForm } from '../hooks/use-register-form';
 // import axios from 'axios'
 
 export default function RegisterForm(props: BoxProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterSchemaDTO>({
-    mode: 'onChange',
-    resolver: zodResolver(registerSchema),
-  });
-
-  const navigate = useNavigate();
-
-  async function onSubmit(data: RegisterSchemaDTO) {
-    try {
-      const response = await api.post('/auth/register', data);
-      toaster.create({
-        title: response.data.message,
-        type: 'success',
-      });
-      navigate({ pathname: '/login' });
-    } catch (error) {
-      if (isAxiosError(error)) {
-        return toaster.create({
-          title: error.response?.data.message,
-          type: 'error',
-        });
-      }
-
-      toaster.create({
-        title: 'Something went wrong!',
-        type: 'error',
-      });
-    }
-
-    // console.log(data);
-    // navigate({ pathname: '/login' });
-    // // send to backend
-    // await axios.post("https://backend-circle.com/api/v1/register", data)
-  }
+  const { errors, handleSubmit, isPending, onSubmit, register } =
+    useRegisterForm();
+  // console.log(data);
+  // navigate({ pathname: '/login' });
+  // // send to backend
+  // await axios.post("https://backend-circle.com/api/v1/register", data)
 
   return (
     <Box display={'flex'} flexDirection={'column'} gap={'12px'} {...props}>
@@ -91,8 +54,13 @@ export default function RegisterForm(props: BoxProps) {
           />
           <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
         </Field.Root>
-        <Button backgroundColor={'brand'} color={'white'} type="submit">
-          Register
+        <Button
+          backgroundColor={'brand'}
+          color={'white'}
+          type="submit"
+          disabled={isPending ? true : false}
+        >
+          {isPending ? <Spinner /> : 'Register'}
         </Button>
       </form>
       <Text as="span">
