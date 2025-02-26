@@ -1,8 +1,9 @@
 import { galleryAddLogo } from '@/assets/icons';
 import { Avatar } from '@/components/ui/avatar';
 import { toaster } from '@/components/ui/toaster';
+import { ThreadResponse } from '@/features/thread/dto/thread';
 import { api } from '@/libs/api';
-import { userSession } from '@/utils/fake-datas/session';
+import { useAuthStore } from '@/stores/auth';
 import {
   createThreadSchema,
   CreateThreadSchemaDTO,
@@ -22,19 +23,12 @@ import { isAxiosError } from 'axios';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-interface ThreadResponse {
-  message: string;
-  data: {
-    id: string;
-    content: string;
-    imageUrl: string | null;
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-
 export default function CreateThread() {
-  const { fullName, avatarUrl } = userSession;
+  const {
+    user: {
+      profile: { fullName, avatarUrl },
+    },
+  } = useAuthStore();
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
 
@@ -65,7 +59,7 @@ export default function CreateThread() {
     Error,
     CreateThreadSchemaDTO
   >({
-    mutationKey: ['create-threads'],
+    mutationKey: ['create-thread'],
     mutationFn: async (data: CreateThreadSchemaDTO) => {
       const formData = new FormData();
       formData.append('content', data.content);
@@ -136,7 +130,7 @@ export default function CreateThread() {
         >
           <Avatar
             name={fullName}
-            src={avatarUrl}
+            src={avatarUrl || ''}
             shape="full"
             size="full"
             width={'50px'}

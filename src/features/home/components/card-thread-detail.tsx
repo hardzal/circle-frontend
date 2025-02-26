@@ -1,15 +1,97 @@
-import { likeLogo, replyLogoOutline } from '@/assets/icons';
+import { likeLogo, likeLogoOutline, replyLogoOutline } from '@/assets/icons';
 import { Avatar } from '@/components/ui/avatar';
-import { Box, BoxProps, Button, Image, Text } from '@chakra-ui/react';
-import { Post } from '../types/posts';
+import { Box, Button, Image, Text } from '@chakra-ui/react';
 import { formatDate } from '@/utils/format-date';
+import { useParams } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  CreateLikeSchemaDTO,
+  DeleteLikeSchemaDTO,
+} from '@/utils/schemas/like.schema';
+import { api } from '@/libs/api';
+import { isAxiosError } from 'axios';
+import { toaster } from '@/components/ui/toaster';
+import { LikeResponse } from '@/features/like/dto/like';
+import { Thread } from '@/features/thread/types/thread';
 
-interface CardThreadDetailProps extends BoxProps {
-  postData: Post;
-}
+export default function CardThreadDetail(thread: Thread) {
+  const { threadId } = useParams();
+  const queryClient = useQueryClient();
 
-export default function CardThreadDetail({ postData }: CardThreadDetailProps) {
-  console.info(postData);
+  const { isPending: isPendingLike, mutateAsync: mutateLike } = useMutation<
+    LikeResponse,
+    Error,
+    CreateLikeSchemaDTO
+  >({
+    mutationKey: ['like'],
+    mutationFn: async (data: CreateLikeSchemaDTO) => {
+      const response = await api.post(`/likes`, data);
+
+      return response.data;
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        return toaster.create({
+          title: error.response?.data.message,
+          type: 'error',
+        });
+      }
+
+      toaster.create({
+        title: 'Something went wrong!',
+        type: 'error',
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [`threads/${threadId}`],
+      });
+    },
+  });
+
+  const { isPending: isPendingUnlike, mutateAsync: mutateUnlike } = useMutation<
+    LikeResponse,
+    Error,
+    DeleteLikeSchemaDTO
+  >({
+    mutationKey: ['unlike'],
+    mutationFn: async (data: DeleteLikeSchemaDTO) => {
+      const response = await api.delete<LikeResponse>(
+        `/likes/${data.threadId}`
+      );
+
+      return response.data;
+    },
+
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        return toaster.create({
+          title: error.response?.data.message,
+          type: 'error',
+        });
+      }
+
+      toaster.create({
+        title: 'Something went wrong!',
+        type: 'error',
+      });
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [`threads/${threadId}`],
+      });
+    },
+  });
+
+  async function onLike(data: CreateLikeSchemaDTO) {
+    await mutateLike(data);
+  }
+
+  async function onUnlike(data: DeleteLikeSchemaDTO) {
+    await mutateUnlike(data);
+  }
+
   return (
     <Box
       display={'flex'}
@@ -21,23 +103,25 @@ export default function CardThreadDetail({ postData }: CardThreadDetailProps) {
     >
       <Box display={'flex'} gap={'4px'}>
         <Avatar
-          name={postData.user.fullName}
-          src={postData.user.avatarUrl}
+          name={thread.user?.profile?.fullName || ''}
+          src={thread.user?.profile?.avatarUrl || ''}
           shape="full"
           size="full"
           width={'50px'}
           height={'50px'}
         />
         <Box>
-          <Text fontWeight={'bold'}>{postData.user.fullName}</Text>
-          <Text color={'secondary'}>@{postData.user.username}</Text>
+          <Text fontWeight={'bold'}>{thread.user?.profile?.fullName}</Text>
+          <Text color={'secondary'}>@{thread.user?.username}</Text>
         </Box>
       </Box>
 
       <Box display={'flex'} flexDirection={'column'} gap={'4px'}>
-        <Text>{postData.content}</Text>
+        <Text>{thread.content}</Text>
 
-        <Text color={'secondary'}>{formatDate(postData.createdAt)}</Text>
+        <Text color={'secondary'}>
+          {formatDate(new Date(thread.createdAt))}
+        </Text>
 
         <Box display={'flex'}>
           <Button
@@ -45,9 +129,18 @@ export default function CardThreadDetail({ postData }: CardThreadDetailProps) {
             display={'flex'}
             gap={'4px'}
             color={'secondary'}
+            disabled={isPendingLike || isPendingUnlike}
+            onClick={() =>
+              thread.isLiked
+                ? onUnlike({ threadId: thread.id })
+                : onLike({ threadId: thread.id })
+            }
           >
-            <Image src={likeLogo} width={'27px'} />
-            <Text>{postData.likesCount}</Text>
+            <Image
+              src={thread.isLiked ? likeLogo : likeLogoOutline}
+              width={'27px'}
+            />
+            <Text>{thread.likesCount}</Text>
           </Button>
           <Button
             variant={'ghost'}
@@ -56,7 +149,7 @@ export default function CardThreadDetail({ postData }: CardThreadDetailProps) {
             color={'secondary'}
           >
             <Image src={replyLogoOutline} width={'27px'} />
-            <Text>{postData.repliesCount}</Text>
+            <Text>{thread.repliesCount}</Text>
             <Text>Replies</Text>
           </Button>
         </Box>

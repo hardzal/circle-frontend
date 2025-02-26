@@ -1,8 +1,11 @@
+import { ProfileEntity } from './profile.entity';
+
 export interface UserEntity {
   id: string;
   email: string;
   username: string;
   password: string;
-  createdAt: Date;
-  updatedAt: Date;
+  profile?: ProfileEntity;
+  createdAt: string;
+  updatedAt: string;
 }

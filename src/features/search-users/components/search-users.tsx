@@ -23,7 +23,7 @@ export default function SearchUsers() {
   } = useQuery<SearchUser[]>({
     queryKey: ['search-users'],
     queryFn: async () => {
-      const response = await api.get(`/users?search=${searchTextDebounced}`);
+      const response = await api.get(`/users/search?q=${searchTextDebounced}`);
 
       return response.data;
     },

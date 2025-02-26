@@ -1,8 +1,7 @@
 import { likeLogo, likeLogoOutline, replyLogoOutline } from '@/assets/icons';
 import { Avatar } from '@/components/ui/avatar';
-import { Box, BoxProps, Button, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Image, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { Thread } from '../types/posts';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -12,28 +11,15 @@ import {
 import { api } from '@/libs/api';
 import { isAxiosError } from 'axios';
 import { toaster } from '@/components/ui/toaster';
+import { LikeResponse } from '@/features/like/dto/like';
+import { Thread } from '@/features/thread/types/thread';
 
-interface CardThreadProps extends BoxProps {
-  threadData: Thread;
-}
-
-interface LikeResponse {
-  message: string;
-  data: {
-    id: string;
-    userId: string;
-    threadId: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-
-export default function CardThread({ threadData }: CardThreadProps) {
+export default function CardThread(thread: Thread) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   function onClickCard() {
-    navigate(`/thread/${threadData.id}`);
+    navigate(`/thread/${thread.id}`);
   }
 
   // custom hooks like
@@ -123,8 +109,8 @@ export default function CardThread({ threadData }: CardThreadProps) {
       padding={'16px'}
     >
       <Avatar
-        name={threadData.user.fullName}
-        src={threadData.user.avatarUrl}
+        name={thread.user?.profile?.fullName}
+        src={thread.user?.profile?.avatarUrl}
         shape="full"
         size="full"
         width={'50px'}
@@ -133,16 +119,16 @@ export default function CardThread({ threadData }: CardThreadProps) {
 
       <Box display={'flex'} flexDirection={'column'} gap={'4px'}>
         <Box display={'flex'} gap={'4px'}>
-          <Text fontWeight={'bold'}>{threadData.user.fullName}</Text>
-          <Text color={'secondary'}>@{threadData.user.username}</Text>
+          <Text fontWeight={'bold'}>{thread.user?.profile?.fullName}</Text>
+          <Text color={'secondary'}>@{thread.user?.username}</Text>
           <Text color={'secondary'}>•</Text>
           <Text color={'secondary'}>
             {' '}
-            {new Date(threadData.createdAt).getHours()}h h
+            {new Date(thread.createdAt).getHours()}h h
           </Text>
         </Box>
         <Text cursor={'pointer'} onClick={onClickCard}>
-          {threadData.content}
+          {thread.content}
         </Text>
         <Box display={'flex'}>
           <Button
@@ -151,21 +137,21 @@ export default function CardThread({ threadData }: CardThreadProps) {
             gap={'4px'}
             disabled={isPendingLike || isPendingUnlike}
             onClick={() =>
-              threadData.isLiked
-                ? onUnLike({ threadId: threadData.id })
-                : onLike({ threadId: threadData.id })
+              thread.isLiked
+                ? onUnLike({ threadId: thread.id })
+                : onLike({ threadId: thread.id })
             }
           >
             <Image
-              src={threadData.isLiked ? likeLogo : likeLogoOutline}
+              src={thread.isLiked ? likeLogo : likeLogoOutline}
               width={'27px'}
             />
-            <Text>{threadData.likesCount}</Text>
+            <Text>{thread.likesCount}</Text>
           </Button>
 
           <Button variant={'ghost'} display={'flex'} gap={'4px'}>
             <Image src={replyLogoOutline} width={'27px'} />
-            <Text>{threadData.repliesCount}</Text>
+            <Text>{thread.repliesCount}</Text>
             <Text cursor={'pointer'} onClick={onClickCard}>
               Replies
             </Text>

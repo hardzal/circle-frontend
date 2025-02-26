@@ -1,9 +1,9 @@
 import { Box, Spinner, Text } from '@chakra-ui/react';
 import CardThread from './card-thread';
 import CreateThread from './create-thread';
-import { Thread } from '../types/posts';
 import { api } from '@/libs/api';
 import { useQuery } from '@tanstack/react-query';
+import { Thread } from '@/features/thread/types/thread';
 
 export default function Home() {
   const {
@@ -31,7 +31,7 @@ export default function Home() {
       ) : (
         <Box display={'flex'} flexDirection={'column'} gap={'16px'}>
           {threads?.map((thread: Thread) => (
-            <CardThread threadData={thread} key={thread.id} />
+            <CardThread {...thread} key={thread.id} />
           ))}
         </Box>
       )}

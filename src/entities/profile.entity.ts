@@ -4,6 +4,6 @@ export interface ProfileEntity {
   avatarUrl: string | undefined;
   bannerUrl: string | undefined;
   bio: string | undefined;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }

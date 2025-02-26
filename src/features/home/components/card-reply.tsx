@@ -1,31 +1,20 @@
 import { likeLogo } from '@/assets/icons';
 import { Avatar } from '@/components/ui/avatar';
-import { Box, BoxProps, Button, Image, Text } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import { Reply } from '../types/posts';
+import { Box, Button, Image, Text } from '@chakra-ui/react';
+import { ReplyEntity } from '@/entities/reply.entity';
 
-interface CardReplyProps extends BoxProps {
-  replyData: Reply;
-}
-
-export default function CardReply({ replyData }: CardReplyProps) {
-  const navigate = useNavigate();
-
-  function onClickCard() {
-    navigate(`/thread/${replyData.id}`);
-  }
-
+export default function CardReply(reply: ReplyEntity) {
   return (
     <Box
       display={'flex'}
       gap={'16px'}
       borderBottom={'1px solid'}
       borderColor={'outline'}
-      padding={'16px 0px'}
+      padding={'30px 0px'}
     >
       <Avatar
-        name={replyData.user.fullName}
-        src={replyData.user.avatarUrl}
+        name={reply.user?.profile?.fullName || ''}
+        src={reply.user?.profile?.avatarUrl || ''}
         shape="full"
         size="full"
         width={'50px'}
@@ -34,18 +23,18 @@ export default function CardReply({ replyData }: CardReplyProps) {
 
       <Box display={'flex'} flexDirection={'column'} gap={'4px'}>
         <Box display={'flex'} gap={'4px'}>
-          <Text fontWeight={'bold'}>{replyData.user.fullName}</Text>
-          <Text color={'secondary'}>@{replyData.user.username}</Text>
+          <Text fontWeight={'bold'}>{reply.user?.profile?.fullName}</Text>
+          <Text color={'secondary'}>@{reply.user?.username}</Text>
           <Text color={'secondary'}>•</Text>
-          <Text color={'secondary'}>{replyData.createdAt.getHours()}h</Text>
+          <Text color={'secondary'}>
+            {new Date(reply.createdAt).getHours()}h
+          </Text>
         </Box>
-        <Text cursor={'pointer'} onClick={onClickCard}>
-          {replyData.content}
-        </Text>
+        <Text cursor={'pointer'}>{reply.content}</Text>
         <Box display={'flex'}>
           <Button variant={'ghost'} display={'flex'} gap={'4px'}>
             <Image src={likeLogo} width={'27px'} />
-            <Text>{replyData.likesCount}</Text>
+            <Text>{'??'}</Text>
           </Button>
         </Box>
       </Box>
