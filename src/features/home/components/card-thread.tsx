@@ -110,7 +110,7 @@ export default function CardThread(thread: Thread) {
     >
       <Avatar
         name={thread.user?.profile?.fullName}
-        src={thread.user?.profile?.avatarUrl}
+        src={thread.user?.profile?.avatar}
         shape="full"
         size="full"
         width={'50px'}

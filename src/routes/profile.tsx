@@ -3,16 +3,6 @@
 // import { Box, Button, Image, Text } from '@chakra-ui/react';
 
 export default function ProfilePage() {
-  // const {
-  //   fullName,
-  //   avatarUrl,
-  //   backgroundUrl,
-  //   followersCount,
-  //   followingsCount,
-  //   username,
-  //   bio,
-  // } = useAuthStore((state) => state.user);
-
   return (
     <>
       {/* <Box display={'flex'} flexDirection={'column'} padding={'30px'}>
@@ -96,9 +86,7 @@ export default function ProfilePage() {
       </Box>
       <hr />
       <Box display={'flex'} flexDirection={'column'} gap={'16px'}>
-        {postDatas.map((postData) => (
-          <CardThread postData={postData} key={postData.id} />
-        ))}
+        
       </Box> */}
     </>
   );

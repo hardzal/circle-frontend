@@ -14,7 +14,7 @@ export default function CardReply(reply: ReplyEntity) {
     >
       <Avatar
         name={reply.user?.profile?.fullName || ''}
-        src={reply.user?.profile?.avatarUrl || ''}
+        src={reply.user?.profile?.avatar || ''}
         shape="full"
         size="full"
         width={'50px'}
