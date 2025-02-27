@@ -24,8 +24,8 @@ export default function SearchUsers() {
     queryKey: ['search-users'],
     queryFn: async () => {
       const response = await api.get(`/users/search?q=${searchTextDebounced}`);
-
-      return response.data;
+      console.log(response.data.data);
+      return response.data.data;
     },
   });
 
@@ -54,7 +54,10 @@ export default function SearchUsers() {
       ) : (
         <>
           {users?.map((user) => {
-            <SearchUserCard searchUserData={user} key={user.id} />;
+            {
+              console.log(user);
+            }
+            return <SearchUserCard searchUserData={user} key={user.id} />;
           })}
         </>
       )}

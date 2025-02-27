@@ -4,7 +4,9 @@ import Home from '../features/home/components/home';
 export default function HomePage() {
   return (
     <Box>
-      <Text fontSize={'2xl'}>Home</Text>
+      <Text fontSize={'2xl'} marginLeft={'20px'} marginTop={'20px'}>
+        Home
+      </Text>
       <Home />
     </Box>
   );

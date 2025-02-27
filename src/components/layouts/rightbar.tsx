@@ -9,15 +9,15 @@ import { useLocation } from 'react-router-dom';
 export default function RightBar(props: BoxProps) {
   const {
     username,
-    profile: { fullName, bio, bannerUrl, avatarUrl },
+    profile: { fullName, bio, bannerURL, avatar },
   } = useAuthStore((state) => state.user);
   const { pathname } = useLocation();
   console.log(pathname);
-  const profileData = { fullName, bio, bannerUrl, avatarUrl };
+  const profileData = { fullName, bio, bannerURL, avatar };
   return (
     <Box
       height={'100vh'}
-      padding={'40px'}
+      padding={'0px'}
       {...props}
       position={'fixed'}
       top={'0'}

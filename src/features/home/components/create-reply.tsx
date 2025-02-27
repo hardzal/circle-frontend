@@ -18,7 +18,7 @@ export default function CreateReply() {
   const { threadId } = useParams();
   const {
     user: {
-      profile: { fullName, avatarUrl },
+      profile: { fullName, avatar },
     },
   } = useAuthStore();
 
@@ -90,7 +90,7 @@ export default function CreateReply() {
       >
         <Avatar
           name={fullName}
-          src={avatarUrl || ''}
+          src={avatar || ''}
           shape="full"
           size="full"
           width={'50px'}

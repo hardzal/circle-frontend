@@ -9,7 +9,6 @@ import { useParams } from 'react-router-dom';
 
 export default function ThreadDetail() {
   const { threadId } = useParams();
-
   const { data, isLoading } = useQuery<Thread>({
     queryKey: [`threads/${threadId}`],
     queryFn: async () => {

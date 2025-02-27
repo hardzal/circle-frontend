@@ -26,7 +26,7 @@ import { useForm } from 'react-hook-form';
 export default function CreateThread() {
   const {
     user: {
-      profile: { fullName, avatarUrl },
+      profile: { fullName, avatar },
     },
   } = useAuthStore();
   const inputFileRef = useRef<HTMLInputElement | null>(null);
@@ -125,12 +125,13 @@ export default function CreateThread() {
         <Box
           display={'flex'}
           alignItems={'center'}
+          justifyContent={'center'}
           gap={'20px'}
-          padding={'20px 0px'}
+          width={'90%'}
         >
           <Avatar
             name={fullName}
-            src={avatarUrl || ''}
+            src={avatar || ''}
             shape="full"
             size="full"
             width={'50px'}

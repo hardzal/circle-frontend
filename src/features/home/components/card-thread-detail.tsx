@@ -1,7 +1,6 @@
 import { likeLogo, likeLogoOutline, replyLogoOutline } from '@/assets/icons';
 import { Avatar } from '@/components/ui/avatar';
 import { Box, Button, Image, Text } from '@chakra-ui/react';
-import { formatDate } from '@/utils/format-date';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -104,7 +103,7 @@ export default function CardThreadDetail(thread: Thread) {
       <Box display={'flex'} gap={'4px'}>
         <Avatar
           name={thread.user?.profile?.fullName || ''}
-          src={thread.user?.profile?.avatarUrl || ''}
+          src={thread.user?.profile?.avatar || ''}
           shape="full"
           size="full"
           width={'50px'}
@@ -119,8 +118,8 @@ export default function CardThreadDetail(thread: Thread) {
       <Box display={'flex'} flexDirection={'column'} gap={'4px'}>
         <Text>{thread.content}</Text>
 
-        <Text color={'secondary'}>
-          {formatDate(new Date(thread.createdAt))}
+        <Text color={'secondary'} padding={'10px'}>
+          {new Date(thread.createdAt).getHours()} hour ago
         </Text>
 
         <Box display={'flex'}>

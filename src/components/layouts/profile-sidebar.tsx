@@ -4,8 +4,8 @@ interface UserProfile {
   username: string;
   profile: {
     fullName: string;
-    avatarUrl?: string;
-    bannerUrl?: string;
+    avatar?: string;
+    banerURL?: string;
     bio?: string;
   };
 }
@@ -19,7 +19,7 @@ export default function ProfileSidebar({ username, profile }: UserProfile) {
         </Card.Header>
         <Card.Body>
           <Box
-            backgroundImage={`url("${profile.bannerUrl || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}  ")`}
+            backgroundImage={`url("${profile.banerURL || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}  ")`}
             padding={'15px'}
             borderRadius={'lg'}
             height={'100px'}
@@ -37,7 +37,7 @@ export default function ProfileSidebar({ username, profile }: UserProfile) {
           >
             <Image
               src={
-                profile.avatarUrl ||
+                profile.avatar ||
                 `https://api.dicebear.com/9.x/notionists/svg?seed=${profile.fullName}`
               }
               boxSize="80px"

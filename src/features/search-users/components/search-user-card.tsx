@@ -20,8 +20,15 @@ export default function SearchUserCard({
       {...props}
     >
       <Avatar
-        name={searchUserData.profile.fullName}
-        src={searchUserData.profile.avatarUrl}
+        name={
+          searchUserData.profile.fullName ||
+          `https://api.dicebear.com/9.x/notionists/svg?seed=${searchUserData.profile.fullName}`
+        }
+        src={
+          searchUserData.profile.avatar ||
+          'https://api.dicebear.com/9.x/glass/svg?seed=' +
+            searchUserData.username
+        }
         shape="full"
         size="full"
         width={'50px'}

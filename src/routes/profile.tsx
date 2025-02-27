@@ -1,22 +1,21 @@
-import CardThread from '@/features/home/components/card-thread';
-import { useAuthStore } from '@/stores/auth';
-import { postDatas } from '@/utils/fake-datas/posts';
-import { Box, Button, Image, Text } from '@chakra-ui/react';
+// import CardThread from '@/features/home/components/card-thread';
+// import { useAuthStore } from '@/stores/auth';
+// import { Box, Button, Image, Text } from '@chakra-ui/react';
 
 export default function ProfilePage() {
-  const {
-    fullName,
-    avatarUrl,
-    backgroundUrl,
-    followersCount,
-    followingsCount,
-    username,
-    bio,
-  } = useAuthStore((state) => state.user);
+  // const {
+  //   fullName,
+  //   avatarUrl,
+  //   backgroundUrl,
+  //   followersCount,
+  //   followingsCount,
+  //   username,
+  //   bio,
+  // } = useAuthStore((state) => state.user);
 
   return (
     <>
-      <Box display={'flex'} flexDirection={'column'} padding={'30px'}>
+      {/* <Box display={'flex'} flexDirection={'column'} padding={'30px'}>
         <Text as={'h1'} fontSize={'2xl'} marginBottom={'5px'}>
           {fullName}
         </Text>
@@ -100,7 +99,7 @@ export default function ProfilePage() {
         {postDatas.map((postData) => (
           <CardThread postData={postData} key={postData.id} />
         ))}
-      </Box>
+      </Box> */}
     </>
   );
 }

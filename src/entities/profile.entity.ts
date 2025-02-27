@@ -1,8 +1,8 @@
 export interface ProfileEntity {
   id: string;
   fullName: string;
-  avatarUrl: string | undefined;
-  bannerUrl: string | undefined;
+  avatar: string | undefined;
+  bannerURL: string | undefined;
   bio: string | undefined;
   createdAt: string;
   updatedAt: string;
