@@ -62,7 +62,7 @@ export default function ProfilePage() {
               bottom={'10px'}
               src={`${
                 profileData.avatar ||
-                `https://api.dicebear.com/9.x/notionists/svg?seed=${profile.fullName}`
+                `https://api.dicebear.com/9.x/notionists/svg?seed=${profileData.fullName}`
               }`}
               boxSize="100px"
               borderRadius="full"
