@@ -17,7 +17,7 @@ export default function ForgotPasswordForm(props: BoxProps) {
 
   // send to backend
   // await axios.post("https://backend-circle.com/api/v1/forgot-password", data)
-
+  console.log(register);
   return (
     <Box display={'flex'} flexDirection={'column'} gap={'12px'} {...props}>
       <Image src={brandLogo} width={'108px'} />

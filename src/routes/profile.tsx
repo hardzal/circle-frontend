@@ -17,7 +17,7 @@ export default function ProfilePage() {
   console.log(pathname);
 
   const profileData = { fullName, bio, bannerURL, avatar };
-
+  console.log(id);
   const {
     data: threads,
     isLoading,
