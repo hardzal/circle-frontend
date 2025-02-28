@@ -130,6 +130,12 @@ export default function CardThread(thread: Thread) {
         <Text cursor={'pointer'} onClick={onClickCard}>
           {thread.content}
         </Text>
+        <Image
+          objectFit={'contain'}
+          maxHeight={'300px'}
+          maxWidth={'300px'}
+          src={thread.images || ''}
+        />
         <Box display={'flex'}>
           <Button
             variant={'ghost'}

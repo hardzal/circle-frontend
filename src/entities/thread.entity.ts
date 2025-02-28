@@ -5,7 +5,7 @@ import { UserEntity } from './user.entity';
 export interface ThreadEntity {
   id: string;
   content: string;
-  images: string[];
+  images: string;
   user?: UserEntity;
   likes?: LikeEntity[];
   replies?: ReplyEntity[];

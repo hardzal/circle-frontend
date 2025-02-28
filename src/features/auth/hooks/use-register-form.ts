@@ -39,18 +39,19 @@ export function useRegisterForm() {
     mutationKey: ['register'],
     mutationFn: async (data: RegisterSchemaDTO) => {
       const response = await api.post<RegisterResponse>(`/auth/register`, data);
-
+      console.log(response);
       return response.data;
     },
 
     onError: async (error) => {
       if (isAxiosError(error)) {
+        console.log(error.response?.data.message);
         return toaster.create({
           title: error.response?.data.message,
           type: 'error',
         });
       }
-
+      console.log('error here');
       toaster.create({
         title: 'Something went wrong!',
         type: 'error',

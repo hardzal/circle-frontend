@@ -65,7 +65,7 @@ export default function FollowsSidebar({ background = 'background' }) {
                 </Box>
               ))
             ) : (
-              <p>Data bukan array</p>
+              <p>Belum ada data yang bisa direkomendasikan</p>
             )}
           </>
         )}
