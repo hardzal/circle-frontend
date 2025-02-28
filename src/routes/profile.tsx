@@ -40,7 +40,7 @@ export default function ProfilePage() {
         </Text>
         <Box display={'flex'} flexDirection={'column'}>
           <Box
-            backgroundImage={`url("${profileData.bannerURL}")`}
+            backgroundImage={`url("${profileData.bannerURL || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}}")`}
             padding={'15px'}
             borderRadius={'lg'}
             height={'140px'}
@@ -60,7 +60,10 @@ export default function ProfilePage() {
               position={'relative'}
               left={'15px'}
               bottom={'10px'}
-              src={`${profileData.avatar}`}
+              src={`${
+                profileData.avatar ||
+                `https://api.dicebear.com/9.x/notionists/svg?seed=${profile.fullName}`
+              }`}
               boxSize="100px"
               borderRadius="full"
               backgroundColor={'background'}
