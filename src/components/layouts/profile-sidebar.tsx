@@ -5,7 +5,7 @@ interface UserProfile {
   profile: {
     fullName: string;
     avatar?: string;
-    banerURL?: string;
+    bannerURL?: string;
     bio?: string;
   };
 }
@@ -19,7 +19,7 @@ export default function ProfileSidebar({ username, profile }: UserProfile) {
         </Card.Header>
         <Card.Body>
           <Box
-            backgroundImage={`url("${profile.banerURL || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}  ")`}
+            backgroundImage={`url("${profile.bannerURL || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}  ")`}
             padding={'15px'}
             borderRadius={'lg'}
             height={'100px'}

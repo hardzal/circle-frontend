@@ -1,17 +1,25 @@
-// import CardThread from '@/features/home/components/card-thread';
-// import { useAuthStore } from '@/stores/auth';
-// import { Box, Button, Image, Text } from '@chakra-ui/react';
+import { useAuthStore } from '@/stores/auth';
+import { Box, Button, Text, Image } from '@chakra-ui/react';
+import { useLocation } from 'react-router-dom';
 
 export default function ProfilePage() {
+  const {
+    username,
+    profile: { fullName, bio, bannerURL, avatar },
+  } = useAuthStore((state) => state.user);
+  const { pathname } = useLocation();
+  console.log(pathname);
+  const profileData = { fullName, bio, bannerURL, avatar };
+
   return (
     <>
-      {/* <Box display={'flex'} flexDirection={'column'} padding={'30px'}>
+      <Box display={'flex'} flexDirection={'column'} padding={'30px'}>
         <Text as={'h1'} fontSize={'2xl'} marginBottom={'5px'}>
-          {fullName}
+          {profileData.fullName}
         </Text>
         <Box display={'flex'} flexDirection={'column'}>
           <Box
-            backgroundImage={`url("${backgroundUrl}")`}
+            backgroundImage={`url("${profileData.bannerURL}")`}
             padding={'15px'}
             borderRadius={'lg'}
             height={'140px'}
@@ -31,14 +39,14 @@ export default function ProfilePage() {
               position={'relative'}
               left={'15px'}
               bottom={'10px'}
-              src={avatarUrl}
+              src={`${profileData.avatar}`}
               boxSize="100px"
               borderRadius="full"
               backgroundColor={'background'}
               border={'1px solid background'}
               fit="cover"
               marginLeft={'15px'}
-              alt={fullName}
+              alt={`${fullName}`}
             />
 
             <Button
@@ -60,16 +68,16 @@ export default function ProfilePage() {
             position={'relative'}
             bottom={'20px'}
           >
-            <Text>{fullName}</Text>
-            <Text color={'secondary'}>@{username}</Text>
+            <Text>{`${profileData.fullName}`}</Text>
+            <Text color={'secondary'}>@{`${username}`}</Text>
             <Text>{bio}</Text>
             <Box display={'flex'} gap={'5px'}>
               <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
-                <Text fontWeight={'bold'}>{followingsCount}</Text>
+                <Text fontWeight={'bold'}>{`200`}</Text>
                 <Text color={'secondary'}>Following</Text>
               </Box>
               <Box display={'flex'} gap={'5px'}>
-                <Text fontWeight={'bold'}>{followersCount}</Text>
+                <Text fontWeight={'bold'}>{`200`}</Text>
                 <Text color={'secondary'}>Followers</Text>
               </Box>
             </Box>
@@ -85,9 +93,7 @@ export default function ProfilePage() {
         <hr />
       </Box>
       <hr />
-      <Box display={'flex'} flexDirection={'column'} gap={'16px'}>
-        
-      </Box> */}
+      <Box display={'flex'} flexDirection={'column'} gap={'16px'}></Box>
     </>
   );
 }
