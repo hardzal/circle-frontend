@@ -20,7 +20,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export default function CreateThread() {
@@ -29,6 +29,7 @@ export default function CreateThread() {
       profile: { fullName, avatar },
     },
   } = useAuthStore();
+
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
 
@@ -63,10 +64,13 @@ export default function CreateThread() {
     mutationFn: async (data: CreateThreadSchemaDTO) => {
       const formData = new FormData();
       formData.append('content', data.content);
-      formData.append('images', data.images[0]);
+
+      if (data.images.length > 0) {
+        formData.append('images', data.images[0]);
+      }
 
       const response = await api.post<ThreadResponse>(`/threads`, formData);
-
+      console.log(response.data);
       return response.data;
     },
 
@@ -85,6 +89,7 @@ export default function CreateThread() {
     },
 
     onSuccess: async (data) => {
+      console.log(data);
       await queryClient.invalidateQueries({
         queryKey: ['threads'],
       });
@@ -97,6 +102,7 @@ export default function CreateThread() {
   });
 
   async function onSubmit(data: CreateThreadSchemaDTO) {
+    console.log(data);
     await mutateAsync(data);
     reset();
     setPreviewURL('');
@@ -151,6 +157,7 @@ export default function CreateThread() {
           <Input
             type={'file'}
             hidden
+            {...restRegisterImages}
             onChange={(e) => {
               handlePreview(e);
               registerImagesOnChange(e);
@@ -159,7 +166,6 @@ export default function CreateThread() {
               registerImagesRef(e);
               inputFileRef.current = e;
             }}
-            {...restRegisterImages}
           />
 
           <Button

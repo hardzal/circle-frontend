@@ -1,4 +1,3 @@
-import { toaster } from '@/components/ui/toaster';
 import { ProfileEntity } from '@/entities/profile.entity';
 import { UserEntity } from '@/entities/user.entity';
 import { api } from '@/libs/api';
@@ -10,6 +9,7 @@ import { isAxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { toaster } from '@/components/ui/toaster';
 
 type UserProfile = UserEntity & {
   profile: ProfileEntity;
@@ -56,9 +56,12 @@ export function useLoginForm() {
 
     onError: (error) => {
       if (isAxiosError(error)) {
+        console.log('gagal login');
+        console.log(error.response?.data.message);
+        console.log(toaster);
         return toaster.create({
-          title: error.response?.data.message,
           type: 'error',
+          title: error.response?.data.message,
         });
       }
 

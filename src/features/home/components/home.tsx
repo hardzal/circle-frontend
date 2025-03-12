@@ -15,7 +15,7 @@ export default function Home() {
     queryKey: ['threads'],
     queryFn: async () => {
       const response = await api.get(`/threads`);
-
+      console.log(response.data);
       return response.data;
     },
   });
