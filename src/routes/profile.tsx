@@ -5,19 +5,16 @@ import { api } from '@/libs/api';
 import { useAuthStore } from '@/stores/auth';
 import { Box, Button, Text, Image, Spinner } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
 
 export default function ProfilePage() {
   const {
     id,
     username,
-    profile: { fullName, bio, bannerURL, avatar },
+    profile: { fullName, bio, bannerURL, avatar, userId },
   } = useAuthStore((state) => state.user);
-  const { pathname } = useLocation();
-  console.log(pathname);
 
-  const profileData = { fullName, bio, bannerURL, avatar };
-  console.log(id);
+  const profileData = { fullName, bio, bannerURL, avatar, userId };
+  console.log('id: ', id);
   const {
     data: threads,
     isLoading,
@@ -26,7 +23,7 @@ export default function ProfilePage() {
   } = useQuery<Thread[]>({
     queryKey: ['threads'],
     queryFn: async () => {
-      const response = await api.get(`/threads/${id}/user`);
+      const response = await api.get(`/threads/${userId}/user`);
 
       return response.data;
     },

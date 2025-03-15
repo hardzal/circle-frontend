@@ -29,7 +29,6 @@ export default function CreateThread() {
       profile: { fullName, avatar },
     },
   } = useAuthStore();
-
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
 

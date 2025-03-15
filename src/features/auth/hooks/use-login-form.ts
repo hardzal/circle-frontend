@@ -56,9 +56,6 @@ export function useLoginForm() {
 
     onError: (error) => {
       if (isAxiosError(error)) {
-        console.log('gagal login');
-        console.log(error.response?.data.message);
-        console.log(toaster);
         return toaster.create({
           type: 'error',
           title: error.response?.data.message,

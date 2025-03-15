@@ -1,10 +1,10 @@
 import { UserEntity } from './user.entity';
 
-export interface FollowEntity {
+export interface FollowingEntity {
   id: string;
-  content: string;
+  followedId: string;
+  followingId: string;
   followed?: UserEntity;
-  following?: UserEntity;
   createdAt: string;
   updatedAt: string;
 }

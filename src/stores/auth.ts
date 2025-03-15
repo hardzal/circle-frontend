@@ -20,7 +20,7 @@ export const useAuthStore = create<useAuthStore>()(
 
     setUser: (payload: UserProfile) =>
       set((state) => ({
-        user: { ...state.user, ...payload },
+        user: state.user ? { ...state.user, ...payload } : payload,
       })),
 
     logout: () =>

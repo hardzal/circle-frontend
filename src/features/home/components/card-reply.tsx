@@ -4,6 +4,8 @@ import { Box, Button, Image, Text } from '@chakra-ui/react';
 import { ReplyEntity } from '@/entities/reply.entity';
 
 export default function CardReply(reply: ReplyEntity) {
+  console.log(reply);
+
   return (
     <Box
       display={'flex'}
