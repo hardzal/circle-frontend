@@ -1,16 +1,31 @@
 import { Box, Button, Card, Heading, Text, Image } from '@chakra-ui/react';
+import { api } from '@/libs/api';
+import { useQuery } from '@tanstack/react-query';
 
 interface UserProfile {
   username: string;
   profile: {
+    userId: string;
     fullName: string;
     avatar?: string;
     bannerURL?: string;
     bio?: string;
   };
 }
+interface followInfo {
+  followerCount: number;
+  followingCount: number;
+}
 
 export default function ProfileSidebar({ username, profile }: UserProfile) {
+  const { data } = useQuery<followInfo>({
+    queryKey: ['followCount'],
+    queryFn: async () => {
+      const response = await api.get(`/follows/${profile.userId}/count`);
+
+      return response.data.data;
+    },
+  });
   return (
     <>
       <Card.Root size="sm" backgroundColor={'background'} marginBottom={'20px'}>
@@ -65,11 +80,11 @@ export default function ProfileSidebar({ username, profile }: UserProfile) {
             <Text>{profile.bio}</Text>
             <Box display={'flex'} gap={'5px'}>
               <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
-                <Text fontWeight={'bold'}>{200}</Text>
+                <Text fontWeight={'bold'}>{data?.followingCount}</Text>
                 <Text color={'secondary'}>Following</Text>
               </Box>
               <Box display={'flex'} gap={'5px'}>
-                <Text fontWeight={'bold'}>{200}</Text>
+                <Text fontWeight={'bold'}>{data?.followerCount}</Text>
                 <Text color={'secondary'}>Followers</Text>
               </Box>
             </Box>

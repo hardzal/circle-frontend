@@ -10,24 +10,24 @@ export default function FollowsPage() {
         Follows
       </Text>
 
-      <Tabs.Root defaultValue="members">
+      <Tabs.Root defaultValue="followers">
         <Tabs.List display={'flex'} justifyContent={'space-around'}>
-          <Tabs.Trigger value="members" asChild>
-            <Link unstyled href="#members">
+          <Tabs.Trigger value="followers" asChild>
+            <Link unstyled href="#followers">
               <Text>Followers</Text>
             </Link>
           </Tabs.Trigger>
-          <Tabs.Trigger value="projects" asChild>
-            <Link unstyled href="#projects">
+          <Tabs.Trigger value="followings" asChild>
+            <Link unstyled href="#followings">
               <Text>Following</Text>
             </Link>
           </Tabs.Trigger>
         </Tabs.List>
 
-        <Tabs.Content value="members">
+        <Tabs.Content value="followers">
           <FollowedList key="1" title="Followers Data" />
         </Tabs.Content>
-        <Tabs.Content value="projects">
+        <Tabs.Content value="followings">
           <FollowingList key="2" title="Followings data" />
         </Tabs.Content>
       </Tabs.Root>

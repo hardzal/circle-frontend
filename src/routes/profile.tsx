@@ -5,16 +5,20 @@ import { api } from '@/libs/api';
 import { useAuthStore } from '@/stores/auth';
 import { Box, Button, Text, Image, Spinner } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+
+interface followInfo {
+  followerCount: number;
+  followingCount: number;
+}
 
 export default function ProfilePage() {
   const {
-    id,
     username,
     profile: { fullName, bio, bannerURL, avatar, userId },
   } = useAuthStore((state) => state.user);
 
   const profileData = { fullName, bio, bannerURL, avatar, userId };
-  console.log('id: ', id);
   const {
     data: threads,
     isLoading,
@@ -26,6 +30,15 @@ export default function ProfilePage() {
       const response = await api.get(`/threads/${userId}/user`);
 
       return response.data;
+    },
+  });
+
+  const { data } = useQuery<followInfo>({
+    queryKey: ['followCount'],
+    queryFn: async () => {
+      const response = await api.get(`/follows/${userId}/count`);
+
+      return response.data.data;
     },
   });
 
@@ -94,12 +107,16 @@ export default function ProfilePage() {
             <Text>{bio}</Text>
             <Box display={'flex'} gap={'5px'}>
               <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
-                <Text fontWeight={'bold'}>{`200`}</Text>
-                <Text color={'secondary'}>Following</Text>
+                <Text fontWeight={'bold'}>{data?.followingCount}</Text>
+                <Link to="/follows#followings">
+                  <Text color={'secondary'}>Following</Text>
+                </Link>
               </Box>
               <Box display={'flex'} gap={'5px'}>
-                <Text fontWeight={'bold'}>{`200`}</Text>
-                <Text color={'secondary'}>Followers</Text>
+                <Text fontWeight={'bold'}>{data?.followerCount}</Text>
+                <Link to="/follows#followers">
+                  <Text color={'secondary'}>Followers</Text>
+                </Link>
               </Box>
             </Box>
           </Box>

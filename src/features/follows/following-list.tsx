@@ -26,8 +26,6 @@ export default function FollowingList({ title }: FollowData) {
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followings`);
 
-      console.log(response.data);
-
       return response.data.data;
     },
   });

@@ -16,11 +16,10 @@ export default function FollowsSidebar({ background = 'background' }) {
     queryFn: async () => {
       const response = await api.get(`/users`);
 
-      console.log(response.data);
-
       return response.data.data;
     },
   });
+
   return (
     <Card.Root size="sm" backgroundColor={background}>
       <Card.Header marginBottom={'10px'}>

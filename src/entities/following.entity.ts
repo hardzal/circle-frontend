@@ -5,6 +5,7 @@ export interface FollowingEntity {
   followedId: string;
   followingId: string;
   followed?: UserEntity;
+  followedCount: number;
   createdAt: string;
   updatedAt: string;
 }
