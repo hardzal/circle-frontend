@@ -72,8 +72,7 @@ export default function FollowedList({ title }: FollowData) {
                     borderRadius={'30px'}
                     onClick={() => {}}
                   >
-                    {/* {searchUserData.isfollowing ? 'Unfollow' : 'Follow'} */}
-                    Follow
+                    {searchUserData?.isFollowing ? 'Unfollow' : 'Follow'}
                   </Button>
                 </Box>
               ))

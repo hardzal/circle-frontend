@@ -25,7 +25,7 @@ export default function FollowingList({ title }: FollowData) {
     queryKey: ['followings'],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followings`);
-
+      console.log('follow', response.data.data);
       return response.data.data;
     },
   });
@@ -60,7 +60,23 @@ export default function FollowingList({ title }: FollowData) {
                     size="lg"
                   />
                   <Box display={'flex'} flexDirection={'column'} flex={'2'}>
-                    <Text>{searchUserData.followed?.profile?.fullName}</Text>
+                    <Text>
+                      {searchUserData.followed?.profile?.fullName}
+                      <Text
+                        fontSize={'smaller'}
+                        display={'inline'}
+                        bgColor={'secondary'}
+                        marginLeft={'2'}
+                        color={'primary'}
+                      >
+                        <em>
+                          {' '}
+                          {searchUserData.isFollowed === true
+                            ? 'Follows you'
+                            : null}
+                        </em>
+                      </Text>
+                    </Text>
                     <Text color={'secondary'}>
                       @{searchUserData.followed?.username}
                     </Text>
@@ -72,8 +88,7 @@ export default function FollowingList({ title }: FollowData) {
                     borderRadius={'30px'}
                     onClick={() => {}}
                   >
-                    {/* {searchUserData.isfollowing ? 'Unfollow' : 'Follow'} */}
-                    Follow
+                    Unfollow
                   </Button>
                 </Box>
               ))
