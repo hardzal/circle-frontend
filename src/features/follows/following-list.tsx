@@ -25,7 +25,6 @@ export default function FollowingList({ title }: FollowData) {
     queryKey: ['followings'],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followings`);
-      console.log('follow', response.data.data);
       return response.data.data;
     },
   });
@@ -86,6 +85,7 @@ export default function FollowingList({ title }: FollowData) {
                     flex={'1'}
                     border={'1px solid white'}
                     borderRadius={'30px'}
+                    disabled={false}
                     onClick={() => {}}
                   >
                     Unfollow

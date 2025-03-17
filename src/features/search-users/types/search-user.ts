@@ -3,4 +3,5 @@ import { UserEntity } from '@/entities/user.entity';
 
 export type SearchUser = UserEntity & {
   profile: ProfileEntity;
+  isFollowing: boolean;
 };
