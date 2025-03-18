@@ -1,10 +1,11 @@
-import { Box, Button, Card, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Card, Heading, Spinner, Text } from '@chakra-ui/react';
 import { Avatar } from '@/components/ui/avatar';
 
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/libs/api';
 import { useAuthStore } from '@/stores/auth';
 import { FollowingEntity } from '@/entities/following.entity';
+import ButtonFollow from './components/button-follow';
 
 interface FollowData {
   title: string;
@@ -25,6 +26,7 @@ export default function FollowingList({ title }: FollowData) {
     queryKey: ['followings'],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followings`);
+      console.log('followings data', response.data.data);
       return response.data.data;
     },
   });
@@ -80,20 +82,14 @@ export default function FollowingList({ title }: FollowData) {
                       @{searchUserData.followed?.username}
                     </Text>
                   </Box>
-                  <Button
-                    variant={'outline'}
-                    flex={'1'}
-                    border={'1px solid white'}
-                    borderRadius={'30px'}
-                    disabled={false}
-                    onClick={() => {}}
-                  >
-                    Unfollow
-                  </Button>
+                  <ButtonFollow
+                    userId={userId}
+                    searchUserData={searchUserData}
+                  />
                 </Box>
               ))
             ) : (
-              <p>Belum ada data yang bisa direkomendasikan</p>
+              <p>Belum ada user yang follow</p>
             )}
           </>
         )}

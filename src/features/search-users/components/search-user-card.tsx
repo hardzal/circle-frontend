@@ -11,6 +11,7 @@ import { useAuthStore } from '@/stores/auth';
 import { api } from '@/libs/api';
 import { isAxiosError } from 'axios';
 import { toaster } from '@/components/ui/toaster';
+import { Link } from 'react-router-dom';
 interface SearchUserCardProps extends BoxProps {
   searchUserData: SearchUser;
 }
@@ -127,8 +128,12 @@ export default function SearchUserCard({
       />
 
       <Box display={'flex'} flexDirection={'column'} gap={'4px'} flex={'10'}>
-        <Text fontWeight={'bold'}>{searchUserData.profile.fullName}</Text>
-        <Text color={'secondary'}>@{searchUserData.username}</Text>
+        <Link to={`/profile/${searchUserData.username}`}>
+          <Text fontWeight={'bold'}>{searchUserData.profile.fullName}</Text>
+        </Link>
+        <Link to={`/profile/${searchUserData.username}`}>
+          <Text color={'secondary'}>@{searchUserData.username}</Text>
+        </Link>
         <Text>{searchUserData.profile.bio}</Text>
       </Box>
       <Button
@@ -141,7 +146,7 @@ export default function SearchUserCard({
             : onFollow({ followedId: searchUserData.id })
         }
       >
-        {searchUserData.isFollowing ? 'Unfollow' : 'Follow'}
+        {searchUserData.isFollowing ? 'Following' : 'Follow'}
       </Button>
     </Box>
   );

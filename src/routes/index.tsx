@@ -12,6 +12,7 @@ import ResetPasswordPage from './reset-password';
 import SearchUsers from './search-users';
 import ThreadDetailPage from './thread-detail';
 import CounterPage from './counter';
+import ProfileDetailPage from './profile-detail';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: '/profile',
         element: <ProfilePage />,
+      },
+      {
+        path: '/profile/:username',
+        element: <ProfileDetailPage />,
       },
       {
         path: '/thread/:threadId',

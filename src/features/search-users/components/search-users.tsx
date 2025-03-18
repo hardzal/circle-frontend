@@ -55,9 +55,6 @@ export default function SearchUsers() {
       ) : (
         <>
           {users?.map((user) => {
-            {
-              console.log(user);
-            }
             return <SearchUserCard searchUserData={user} key={user.id} />;
           })}
         </>
