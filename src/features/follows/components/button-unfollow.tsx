@@ -1,15 +1,12 @@
 import { FollowingEntity } from '@/entities/following.entity';
 import { Button, CloseButton, Dialog, Portal } from '@chakra-ui/react';
 import { useState } from 'react';
-import { useFollow } from '../hooks/use-follow';
 import { useUnfollow } from '../hooks/use-unfollow';
 type Props = {
   userId: string;
   searchUserData: FollowingEntity;
 };
-export default function ButtonFollow({ userId, searchUserData }: Props) {
-  const { isPendingFollow, onFollow } = useFollow(userId);
-
+export default function ButtonUnfollow({ searchUserData }: Props) {
   const { isPendingUnfollow, onUnfollow } = useUnfollow();
 
   const [buttonText, setButtonText] = useState<string>('Following');
@@ -35,25 +32,25 @@ export default function ButtonFollow({ userId, searchUserData }: Props) {
     border: '1px solid red',
   };
 
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Button
-      variant={'outline'}
-      flex={'1'}
-      borderRadius={'30px'}
-      disabled={isPendingFollow || isPendingUnfollow}
-      onClick={() =>
-        searchUserData?.isFollowed
-          ? onUnfollow({ followedId: searchUserData.id })
-          : onFollow({ followedId: searchUserData.id })
-      }
-      style={isHovered ? hoveredStyle : defaultStyle}
-      onMouseOver={handleOverButton}
-      onMouseOut={handleOutButton}
-      key={searchUserData.id}
-    >
-      <Dialog.Root role="alertdialog">
+    <>
+      <Dialog.Root
+        role="alertdialog"
+        open={isOpen}
+        onOpenChange={(details) => setIsOpen(details.open)}
+      >
         <Dialog.Trigger asChild>
-          <Button variant="outline" size="sm">
+          <Button
+            variant={'outline'}
+            flex={'1'}
+            borderRadius={'30px'}
+            colorPalette="red"
+            style={isHovered ? hoveredStyle : defaultStyle}
+            onMouseOver={handleOverButton}
+            onMouseOut={handleOutButton}
+            key={searchUserData.id}
+          >
             {buttonText}
           </Button>
         </Dialog.Trigger>
@@ -74,7 +71,15 @@ export default function ButtonFollow({ userId, searchUserData }: Props) {
                 <Dialog.ActionTrigger asChild>
                   <Button variant="outline">Cancel</Button>
                 </Dialog.ActionTrigger>
-                <Button colorPalette="red">Delete</Button>
+                <Button
+                  disabled={isPendingUnfollow}
+                  onClick={() => {
+                    onUnfollow({ followedId: searchUserData.id });
+                    setIsOpen(false);
+                  }}
+                >
+                  Unfollow
+                </Button>
               </Dialog.Footer>
               <Dialog.CloseTrigger asChild>
                 <CloseButton size="sm" />
@@ -83,6 +88,6 @@ export default function ButtonFollow({ userId, searchUserData }: Props) {
           </Dialog.Positioner>
         </Portal>
       </Dialog.Root>
-    </Button>
+    </>
   );
 }

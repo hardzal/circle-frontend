@@ -19,12 +19,14 @@ export function useFollow(userId: string) {
         `/follows/${userId}`,
         data
       );
-
+      console.log('follow back', response.data);
       return response.data;
     },
 
     onError: (error: Error) => {
       if (isAxiosError(error)) {
+        console.log('follow back', error.response?.data);
+
         return toaster.create({
           title: error.response?.data.message,
           type: 'error',

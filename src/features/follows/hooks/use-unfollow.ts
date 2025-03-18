@@ -15,7 +15,7 @@ export function useUnfollow() {
         const response = await api.delete<FollowResponse>(
           `/follows/${data.followedId}`
         );
-
+        console.log('unfollow', response.data.data);
         return response.data;
       },
 
@@ -36,6 +36,11 @@ export function useUnfollow() {
       onSuccess: async () => {
         await queryClient.invalidateQueries({
           queryKey: ['followings'],
+        });
+
+        return toaster.create({
+          title: 'Done unfollow',
+          type: 'success',
         });
       },
     });

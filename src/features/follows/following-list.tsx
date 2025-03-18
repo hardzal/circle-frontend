@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/libs/api';
 import { useAuthStore } from '@/stores/auth';
 import { FollowingEntity } from '@/entities/following.entity';
-import ButtonFollow from './components/button-follow';
+import ButtonUnfollow from './components/button-unfollow';
 
 interface FollowData {
   title: string;
@@ -26,7 +26,7 @@ export default function FollowingList({ title }: FollowData) {
     queryKey: ['followings'],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followings`);
-      console.log('followings data', response.data.data);
+      console.log('following', response.data);
       return response.data.data;
     },
   });
@@ -82,7 +82,7 @@ export default function FollowingList({ title }: FollowData) {
                       @{searchUserData.followed?.username}
                     </Text>
                   </Box>
-                  <ButtonFollow
+                  <ButtonUnfollow
                     userId={userId}
                     searchUserData={searchUserData}
                   />
