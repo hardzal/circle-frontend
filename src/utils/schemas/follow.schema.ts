@@ -11,3 +11,10 @@ export const deleteFollowSchema = z.object({
 });
 
 export type DeleteFollowSchemaDTO = z.infer<typeof deleteFollowSchema>;
+
+export const toggleFollowSchema = z.object({
+  followedId: z.string().uuid(),
+  isFollowing: z.boolean(),
+});
+
+export type ToggleFollowSchemaDTO = z.infer<typeof toggleFollowSchema>;

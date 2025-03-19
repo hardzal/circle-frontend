@@ -1,11 +1,13 @@
-import { FollowingEntity } from '@/entities/following.entity';
 import { Button, CloseButton, Dialog, Portal } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useUnfollow } from '../hooks/use-unfollow';
+import { FollowToggleEntity } from '@/entities/followtoggle.entity';
+
 type Props = {
   userId: string;
-  searchUserData: FollowingEntity;
+  searchUserData: FollowToggleEntity;
 };
+
 export default function ButtonUnfollow({ searchUserData }: Props) {
   const { isPendingUnfollow, onUnfollow } = useUnfollow();
 
@@ -74,7 +76,9 @@ export default function ButtonUnfollow({ searchUserData }: Props) {
                 <Button
                   disabled={isPendingUnfollow}
                   onClick={() => {
-                    onUnfollow({ followedId: searchUserData.id });
+                    onUnfollow({
+                      followedId: searchUserData?.followed?.id as string,
+                    });
                     setIsOpen(false);
                   }}
                 >

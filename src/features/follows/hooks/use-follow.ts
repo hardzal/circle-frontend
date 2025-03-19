@@ -25,7 +25,7 @@ export function useFollow(userId: string) {
 
     onError: (error: Error) => {
       if (isAxiosError(error)) {
-        console.log('follow back', error.response?.data);
+        console.log('follow back error', error.response?.data.message);
 
         return toaster.create({
           title: error.response?.data.message,
@@ -42,6 +42,11 @@ export function useFollow(userId: string) {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ['followers'],
+      });
+
+      return toaster.create({
+        title: 'Done follow',
+        type: 'success',
       });
     },
   });

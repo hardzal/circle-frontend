@@ -4,8 +4,8 @@ import { Avatar } from '@/components/ui/avatar';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/libs/api';
 import { useAuthStore } from '@/stores/auth';
-import { FollowingEntity } from '@/entities/following.entity';
 import ButtonUnfollow from './components/button-unfollow';
+import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 
 interface FollowData {
   title: string;
@@ -22,7 +22,7 @@ export default function FollowingList({ title }: FollowData) {
     isLoading,
     isError,
     failureReason,
-  } = useQuery<FollowingEntity[]>({
+  } = useQuery<FollowToggleEntity[]>({
     queryKey: ['followings'],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followings`);

@@ -1,17 +1,12 @@
-import { Box, Button, Card, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Card, Heading, Spinner, Text } from '@chakra-ui/react';
 import { Avatar } from '@/components/ui/avatar';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { api } from '@/libs/api';
 import { useAuthStore } from '@/stores/auth';
-import { FollowedEntity } from '@/entities/followed.entity';
-import { toaster } from '@/components/ui/toaster';
-import { isAxiosError } from 'axios';
-import { FollowResponse } from './dto/follow';
-import {
-  CreateFollowSchemaDTO,
-  DeleteFollowSchemaDTO,
-} from '@/utils/schemas/follow.schema';
+import ButtonUnfollow from './components/button-unfollow';
+import ButtonFollow from './components/button-follow';
+import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 
 interface FollowData {
   title: string;
@@ -23,14 +18,12 @@ export default function FollowedList({ title }: FollowData) {
     profile: { userId },
   } = useAuthStore((state) => state.user);
 
-  const queryClient = useQueryClient();
-
   const {
     data: users,
     isLoading,
     isError,
     failureReason,
-  } = useQuery<FollowedEntity[]>({
+  } = useQuery<FollowToggleEntity[]>({
     queryKey: ['followers'],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followers`);
@@ -38,82 +31,6 @@ export default function FollowedList({ title }: FollowData) {
       return response.data.data;
     },
   });
-
-  const { isPending: isPendingFollow, mutateAsync: mutateFollow } = useMutation<
-    FollowResponse,
-    Error,
-    CreateFollowSchemaDTO
-  >({
-    mutationKey: ['follow'],
-    mutationFn: async (data: CreateFollowSchemaDTO) => {
-      const response = await api.post<FollowResponse>(
-        `/follows/${userId}`,
-        data
-      );
-
-      return response.data;
-    },
-
-    onError: (error) => {
-      if (isAxiosError(error)) {
-        return toaster.create({
-          title: error.response?.data.message,
-          type: 'error',
-        });
-      }
-
-      toaster.create({
-        title: 'Something went wrong!',
-        type: 'error',
-      });
-    },
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ['followers'],
-      });
-    },
-  });
-
-  const { isPending: isPendingUnfollow, mutateAsync: mutateUnfollow } =
-    useMutation<FollowResponse, Error, DeleteFollowSchemaDTO>({
-      mutationKey: ['unfollow'],
-      mutationFn: async (data: DeleteFollowSchemaDTO) => {
-        const response = await api.delete<FollowResponse>(
-          `/follows/${data.followedId}`
-        );
-
-        return response.data;
-      },
-
-      onError: (error) => {
-        if (isAxiosError(error)) {
-          return toaster.create({
-            title: error.response?.data.message,
-            type: 'error',
-          });
-        }
-
-        toaster.create({
-          title: 'Something went wrong!',
-          type: 'error',
-        });
-      },
-
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: ['search-users'],
-        });
-      },
-    });
-
-  async function onFollow(data: CreateFollowSchemaDTO) {
-    await mutateFollow(data);
-  }
-
-  async function onUnfollow(data: DeleteFollowSchemaDTO) {
-    await mutateUnfollow(data);
-  }
 
   return (
     <Card.Root size="sm" backgroundColor={'background'}>
@@ -150,24 +67,21 @@ export default function FollowedList({ title }: FollowData) {
                       @{searchUserData.following?.username}
                     </Text>
                   </Box>
-                  <Button
-                    variant={'outline'}
-                    flex={'1'}
-                    border={'1px solid white'}
-                    borderRadius={'30px'}
-                    disabled={isPendingFollow || isPendingUnfollow}
-                    onClick={() =>
-                      searchUserData?.isFollowing
-                        ? onUnfollow({ followedId: searchUserData.id })
-                        : onFollow({ followedId: searchUserData.id })
-                    }
-                  >
-                    {searchUserData?.isFollowing ? 'Following' : 'Follow back'}
-                  </Button>
+                  {searchUserData?.isFollowing ? (
+                    <ButtonUnfollow
+                      userId={userId}
+                      searchUserData={searchUserData}
+                    />
+                  ) : (
+                    <ButtonFollow
+                      userId={userId}
+                      searchUserData={searchUserData}
+                    />
+                  )}
                 </Box>
               ))
             ) : (
-              <p>Belum ada data yang bisa direkomendasikan</p>
+              <p>Belum ada data user follower.</p>
             )}
           </>
         )}
