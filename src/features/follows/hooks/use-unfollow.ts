@@ -38,6 +38,10 @@ export function useUnfollow() {
           queryKey: ['followings'],
         });
 
+        await queryClient.invalidateQueries({
+          queryKey: ['followers'],
+        });
+
         return toaster.create({
           title: 'Done unfollow',
           type: 'success',

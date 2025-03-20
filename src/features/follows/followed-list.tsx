@@ -71,11 +71,13 @@ export default function FollowedList({ title }: FollowData) {
                     <ButtonUnfollow
                       userId={userId}
                       searchUserData={searchUserData}
+                      key={userId}
                     />
                   ) : (
                     <ButtonFollow
                       userId={userId}
                       searchUserData={searchUserData}
+                      key={userId}
                     />
                   )}
                 </Box>
