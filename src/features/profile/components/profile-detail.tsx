@@ -5,6 +5,8 @@ import { Box, Text, Image, Spinner } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { UserProfile } from '../types/user';
+import { useEffect } from 'react';
+
 interface followInfo {
   followerCount: number;
   followingCount: number;
@@ -13,7 +15,7 @@ interface followInfo {
 export default function ProfileUserPage() {
   const { username } = useParams();
 
-  const { data: user } = useQuery<UserProfile>({
+  const { data: user, isPending: isPendingProfile } = useQuery<UserProfile>({
     queryKey: ['userProfile'],
     queryFn: async () => {
       const response = await api.get(`/users/${username}`);
@@ -22,98 +24,118 @@ export default function ProfileUserPage() {
     },
   });
 
+  const userId = user?.profile?.userId;
+
   const {
     data: threads,
-    isLoading,
+    isFetching: isFetchingThreads,
+    refetch: refetchThreads,
     isError,
     failureReason,
   } = useQuery<Thread[]>({
-    queryKey: ['userThreads'],
+    queryKey: ['profileThreads', userId],
     queryFn: async () => {
-      const response = await api.get(`/threads/${user?.profile?.userId}/user`);
+      const response = await api.get(`/threads/${userId}/user`);
 
       return response.data;
     },
+    enabled: !!userId,
   });
 
-  const { data } = useQuery<followInfo>({
-    queryKey: ['userFollowCount'],
+  const {
+    data,
+    isFetching: isFetchingFollow,
+    refetch: refetchFollow,
+  } = useQuery<followInfo>({
+    queryKey: ['userFollowCount', userId],
     queryFn: async () => {
-      const response = await api.get(`/follows/${user?.profile?.userId}/count`);
+      const response = await api.get(`/follows/${userId}/count`);
 
       return response.data.data;
     },
+    enabled: !!userId,
   });
+
+  useEffect(() => {
+    if (userId) {
+      refetchFollow();
+      refetchThreads();
+    }
+  }, [userId, refetchFollow, refetchThreads]);
 
   return (
     <>
-      <Box display={'flex'} flexDirection={'column'} padding={'30px'}>
-        <Text as={'h1'} fontSize={'2xl'} marginBottom={'5px'}>
-          {user?.profile?.fullName}
-        </Text>
-        <Box display={'flex'} flexDirection={'column'}>
-          <Box
-            backgroundImage={`url("${user?.profile?.bannerURL || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}}")`}
-            padding={'15px'}
-            borderRadius={'lg'}
-            height={'140px'}
-            position={'relative'}
-            zIndex={'1'}
-          ></Box>
-          <Box
-            display={'flex'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            zIndex={'10'}
-            position={'relative'}
-            bottom={'35px'}
-            marginBottom={'0px'}
-          >
-            <Image
+      {isPendingProfile && isFetchingFollow ? (
+        <Spinner />
+      ) : (
+        <Box display={'flex'} flexDirection={'column'} padding={'30px'}>
+          <Text as={'h1'} fontSize={'2xl'} marginBottom={'5px'}>
+            {user?.profile?.fullName}
+          </Text>
+          <Box display={'flex'} flexDirection={'column'}>
+            <Box
+              backgroundImage={`url("${user?.profile?.bannerURL || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}}")`}
+              padding={'15px'}
+              borderRadius={'lg'}
+              height={'140px'}
               position={'relative'}
-              left={'15px'}
-              bottom={'10px'}
-              src={`${
-                user?.profile?.avatar ||
-                `https://api.dicebear.com/9.x/notionists/svg?seed=${user?.profile?.fullName}`
-              }`}
-              boxSize="100px"
-              borderRadius="full"
-              backgroundColor={'background'}
-              border={'1px solid background'}
-              fit="cover"
-              marginLeft={'15px'}
-              alt={`${user?.profile?.fullName}`}
-            />
-          </Box>
+              zIndex={'1'}
+            ></Box>
+            <Box
+              display={'flex'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              zIndex={'10'}
+              position={'relative'}
+              bottom={'35px'}
+              marginBottom={'0px'}
+            >
+              <Image
+                position={'relative'}
+                left={'15px'}
+                bottom={'10px'}
+                src={`${
+                  user?.profile?.avatar ||
+                  `https://api.dicebear.com/9.x/notionists/svg?seed=${user?.profile?.fullName}`
+                }`}
+                boxSize="100px"
+                borderRadius="full"
+                backgroundColor={'background'}
+                border={'1px solid background'}
+                fit="cover"
+                marginLeft={'15px'}
+                alt={`${user?.profile?.fullName}`}
+              />
+            </Box>
 
-          <Box
-            display={'flex'}
-            flexDirection={'column'}
-            gap={'5px'}
-            position={'relative'}
-            bottom={'20px'}
-          >
-            <Text>{`${user?.profile?.fullName}`}</Text>
-            <Text color={'secondary'}>@{`${username}`}</Text>
-            <Text>{user?.profile?.bio}</Text>
-            <Box display={'flex'} gap={'5px'}>
-              <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
-                <Text fontWeight={'bold'}>{data?.followingCount}</Text>
-                <Link to="/follows#followings">
-                  <Text color={'secondary'}>Following</Text>
-                </Link>
-              </Box>
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              gap={'5px'}
+              position={'relative'}
+              bottom={'20px'}
+            >
+              <Text>{`${user?.profile?.fullName}`}</Text>
+              <Text color={'secondary'}>@{`${username}`}</Text>
+              <Text>{user?.profile?.bio}</Text>
               <Box display={'flex'} gap={'5px'}>
-                <Text fontWeight={'bold'}>{data?.followerCount}</Text>
-                <Link to="/follows#followers">
-                  <Text color={'secondary'}>Followers</Text>
-                </Link>
+                <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
+                  <Text fontWeight={'bold'}>{data?.followingCount}</Text>
+                  <Link to="/follows#followings">
+                    <Text color={'secondary'}>Following</Text>
+                  </Link>
+                </Box>
+                <Box display={'flex'} gap={'5px'}>
+                  <Text fontWeight={'bold'}>{data?.followerCount}</Text>
+                  <Link to="/follows#followers">
+                    <Text color={'secondary'}>Followers</Text>
+                  </Link>
+                </Box>
               </Box>
             </Box>
           </Box>
         </Box>
-      </Box>
+      )}
       <Box display={'flex'} justifyContent={'space-around'}>
         <Text>All Post</Text>
         <Text>Media</Text>
@@ -125,7 +147,7 @@ export default function ProfileUserPage() {
       <hr />
       <Box display={'flex'} flexDirection={'column'} gap={'16px'}>
         {isError && <Text color={'red'}>{failureReason?.message}</Text>}
-        {isLoading ? (
+        {isFetchingThreads ? (
           <Box display={'flex'} justifyContent={'center'} padding={'50px'}>
             <Spinner />
           </Box>
