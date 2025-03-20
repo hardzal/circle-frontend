@@ -3,8 +3,20 @@ import CreateThread from '@/features/home/components/create-thread';
 import { Thread } from '@/features/thread/types/thread';
 import { api } from '@/libs/api';
 import { useAuthStore } from '@/stores/auth';
-import { Box, Button, Text, Image, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Text,
+  Image,
+  Spinner,
+  Dialog,
+  Portal,
+  CloseButton,
+  Field,
+  Input,
+} from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 interface followInfo {
@@ -15,6 +27,7 @@ interface followInfo {
 export default function ProfilePage() {
   const {
     username,
+    email,
     profile: { fullName, bio, bannerURL, avatar, userId },
   } = useAuthStore((state) => state.user);
 
@@ -41,6 +54,8 @@ export default function ProfilePage() {
       return response.data.data;
     },
   });
+
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -83,16 +98,99 @@ export default function ProfilePage() {
               alt={`${fullName}`}
             />
 
-            <Button
-              position={'relative'}
-              top={'10px'}
-              backgroundColor={'background'}
-              color={'white'}
-              border={'1px solid white'}
-              borderRadius={'30px'}
+            <Dialog.Root
+              role="alertdialog"
+              open={isOpen}
+              onOpenChange={(details) => setIsOpen(details.open)}
             >
-              Edit Profile
-            </Button>
+              <Dialog.Trigger asChild>
+                <Button
+                  position={'relative'}
+                  top={'10px'}
+                  backgroundColor={'background'}
+                  color={'white'}
+                  border={'1px solid white'}
+                  borderRadius={'30px'}
+                >
+                  Edit Profile
+                </Button>
+              </Dialog.Trigger>
+              <Portal>
+                <Dialog.Backdrop />
+                <Dialog.Positioner>
+                  <Dialog.Content>
+                    <Dialog.Header>
+                      <Dialog.Title>Edit Profile</Dialog.Title>
+                    </Dialog.Header>
+                    <Dialog.Body>
+                      <form
+                        // onSubmit={}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '12px',
+                        }}
+                      >
+                        <Field.Root>
+                          <Input
+                            placeholder="Full Name"
+                            value={fullName}
+                            // {...register('fullName')}
+                          />
+                          <Field.ErrorText>
+                            {/* {errors.fullName?.message} */}
+                          </Field.ErrorText>
+                        </Field.Root>
+                        <Field.Root>
+                          <Input placeholder="Username" value={username} />
+                          <Field.ErrorText>
+                            {/* {errors.username?.message} */}
+                          </Field.ErrorText>
+                        </Field.Root>
+                        <Field.Root>
+                          <Input placeholder="Email" value={email} />
+                          <Field.ErrorText>
+                            {/* {errors.email?.message} */}
+                          </Field.ErrorText>
+                        </Field.Root>
+                        <Field.Root>
+                          <Input placeholder="Bio" value={bio} />
+                          <Field.ErrorText>
+                            {/* {errors.email?.message} */}
+                          </Field.ErrorText>
+                        </Field.Root>
+
+                        <Button
+                          backgroundColor={'brand'}
+                          color={'white'}
+                          type="submit"
+                          // disabled={isPending ? true : false}
+                        >
+                          {/* {isPending ? <Spinner /> : 'Register'} */}
+                          Update
+                        </Button>
+                      </form>
+                    </Dialog.Body>
+                    <Dialog.Footer>
+                      <Dialog.ActionTrigger asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </Dialog.ActionTrigger>
+                      {/* <Button
+                        bgColor={'brand'}
+                        onClick={() => {
+                          setIsOpen(false);
+                        }}
+                      >
+                        Submit
+                      </Button> */}
+                    </Dialog.Footer>
+                    <Dialog.CloseTrigger asChild>
+                      <CloseButton size="sm" />
+                    </Dialog.CloseTrigger>
+                  </Dialog.Content>
+                </Dialog.Positioner>
+              </Portal>
+            </Dialog.Root>
           </Box>
 
           <Box

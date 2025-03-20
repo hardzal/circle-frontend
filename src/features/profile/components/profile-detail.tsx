@@ -1,7 +1,7 @@
 import CardThread from '@/features/home/components/card-thread';
 import { Thread } from '@/features/thread/types/thread';
 import { api } from '@/libs/api';
-import { Box, Button, Text, Image, Spinner } from '@chakra-ui/react';
+import { Box, Text, Image, Spinner } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { UserProfile } from '../types/user';
@@ -85,17 +85,6 @@ export default function ProfileUserPage() {
               marginLeft={'15px'}
               alt={`${user?.profile?.fullName}`}
             />
-
-            <Button
-              position={'relative'}
-              top={'10px'}
-              backgroundColor={'background'}
-              color={'white'}
-              border={'1px solid white'}
-              borderRadius={'30px'}
-            >
-              Edit Profile
-            </Button>
           </Box>
 
           <Box

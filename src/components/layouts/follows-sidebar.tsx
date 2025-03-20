@@ -12,7 +12,7 @@ export default function FollowsSidebar({ background = 'background' }) {
     isError,
     failureReason,
   } = useQuery<UserProfile[]>({
-    queryKey: ['users'],
+    queryKey: ['userSuggest'],
     queryFn: async () => {
       const response = await api.get(`/users`);
 

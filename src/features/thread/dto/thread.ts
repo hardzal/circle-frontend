@@ -1,6 +1,6 @@
 export type ThreadResponse = {
   message: string;
-  data: {
+  data?: {
     id: string;
     content: string;
     image: string | null;
