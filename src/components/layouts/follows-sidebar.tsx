@@ -1,20 +1,26 @@
-import { Box, Button, Card, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Card, Heading, Spinner, Text } from '@chakra-ui/react';
 import { Avatar } from '@/components/ui/avatar';
 
 import { useQuery } from '@tanstack/react-query';
-import { UserProfile } from '@/features/profile/types/user';
 import { api } from '@/libs/api';
+import ButtonFollow from '@/features/follows/components/button-follow';
+import { FollowToggleEntity } from '@/entities/followtoggle.entity';
+import { useAuthStore } from '@/stores/auth';
 
 export default function FollowsSidebar({ background = 'background' }) {
+  const {
+    profile: { userId },
+  } = useAuthStore((state) => state.user);
+
   const {
     data: users,
     isLoading,
     isError,
     failureReason,
-  } = useQuery<UserProfile[]>({
+  } = useQuery<FollowToggleEntity[]>({
     queryKey: ['userSuggest'],
     queryFn: async () => {
-      const response = await api.get(`/users`);
+      const response = await api.get(`/follows/suggest`);
 
       return response.data.data;
     },
@@ -34,40 +40,33 @@ export default function FollowsSidebar({ background = 'background' }) {
           </Box>
         ) : (
           <>
-            {Array.isArray(users) ? (
-              users?.map((searchUserData, index) => (
-                <Box
-                  display={'flex'}
-                  gap={'20px'}
-                  alignItems={'center'}
-                  marginBottom={'20px'}
-                  key={index}
-                >
-                  <Avatar
-                    name={searchUserData.profile?.fullName || ''}
-                    src={searchUserData.profile?.avatar || ''}
-                    shape="full"
-                    size="lg"
-                  />
-                  <Box display={'flex'} flexDirection={'column'} flex={'2'}>
-                    <Text>{searchUserData.profile?.fullName}</Text>
-                    <Text color={'secondary'}>@{searchUserData.username}</Text>
-                  </Box>
-                  <Button
-                    variant={'outline'}
-                    flex={'1'}
-                    border={'1px solid white'}
-                    borderRadius={'30px'}
-                    onClick={() => {}}
-                  >
-                    {/* {searchUserData.isFollowed ? 'Unfollow' : 'Follow'} */}
-                    Follow
-                  </Button>
+            {users?.map((searchUserData, index) => (
+              <Box
+                display={'flex'}
+                gap={'20px'}
+                alignItems={'center'}
+                marginBottom={'20px'}
+                key={index}
+              >
+                <Avatar
+                  name={searchUserData.following?.profile?.fullName || ''}
+                  src={searchUserData.following?.profile?.avatar || ''}
+                  shape="full"
+                  size="lg"
+                />
+                <Box display={'flex'} flexDirection={'column'} flex={'2'}>
+                  <Text>{searchUserData.following?.profile?.fullName}</Text>
+                  <Text color={'secondary'}>
+                    @{searchUserData.following?.username}
+                  </Text>
                 </Box>
-              ))
-            ) : (
-              <p>Belum ada data yang bisa direkomendasikan</p>
-            )}
+                <ButtonFollow
+                  userId={userId}
+                  searchUserData={searchUserData}
+                  key={userId}
+                />
+              </Box>
+            ))}
           </>
         )}
       </Card.Body>

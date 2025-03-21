@@ -22,7 +22,7 @@ export default function ButtonFollow({ userId, searchUserData }: Props) {
           onFollow({ followedId: searchUserData?.following?.id as string })
         }
       >
-        {searchUserData?.isFollowing ? 'Following' : 'Follow back'}
+        {searchUserData?.isFollowing ? 'Follow back' : 'Follow'}
       </Button>
     </>
   );
