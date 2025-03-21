@@ -77,6 +77,11 @@ export default function CardThread(thread: Thread) {
       await queryClient.invalidateQueries({
         queryKey: ['threads'],
       });
+
+      toaster.create({
+        title: 'Thread liked!',
+        type: 'success',
+      });
     },
   });
 
@@ -230,6 +235,7 @@ export default function CardThread(thread: Thread) {
   }
 
   const content = watch('content');
+
   return (
     <Box
       display={'flex'}

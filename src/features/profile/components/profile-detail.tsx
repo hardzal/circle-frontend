@@ -15,7 +15,7 @@ interface followInfo {
 export default function ProfileUserPage() {
   const { username } = useParams();
 
-  const { data: user, isPending: isPendingProfile } = useQuery<UserProfile>({
+  const { data: user, isFetching: isFetchingUser } = useQuery<UserProfile>({
     queryKey: ['userProfile'],
     queryFn: async () => {
       const response = await api.get(`/users/${username}`);
@@ -65,7 +65,7 @@ export default function ProfileUserPage() {
 
   return (
     <>
-      {isPendingProfile && isFetchingFollow ? (
+      {isFetchingUser && isFetchingFollow ? (
         <Spinner />
       ) : (
         <Box display={'flex'} flexDirection={'column'} padding={'30px'}>

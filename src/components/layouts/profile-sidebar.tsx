@@ -1,10 +1,13 @@
-import { Box, Button, Card, Heading, Text, Image } from '@chakra-ui/react';
+import { Box, Card, Heading, Text, Image } from '@chakra-ui/react';
 import { api } from '@/libs/api';
 import { useQuery } from '@tanstack/react-query';
+import ProfileEdit from '@/features/profile/components/profile-edit';
 
 interface UserProfile {
+  email: string;
   username: string;
   profile: {
+    id: string;
     userId: string;
     fullName: string;
     avatar?: string;
@@ -17,7 +20,11 @@ interface followInfo {
   followingCount: number;
 }
 
-export default function ProfileSidebar({ username, profile }: UserProfile) {
+export default function ProfileSidebar({
+  email,
+  username,
+  profile,
+}: UserProfile) {
   const { data } = useQuery<followInfo>({
     queryKey: ['followCount'],
     queryFn: async () => {
@@ -26,6 +33,9 @@ export default function ProfileSidebar({ username, profile }: UserProfile) {
       return response.data.data;
     },
   });
+
+  const profileEdit = { ...profile, username, email };
+
   return (
     <>
       <Card.Root size="sm" backgroundColor={'background'} marginBottom={'20px'}>
@@ -64,14 +74,7 @@ export default function ProfileSidebar({ username, profile }: UserProfile) {
               alt={profile.fullName}
             />
 
-            <Button
-              backgroundColor={'background'}
-              color={'white'}
-              border={'1px solid white'}
-              borderRadius={'30px'}
-            >
-              Edit Profile
-            </Button>
+            <ProfileEdit {...profileEdit} />
           </Box>
 
           <Box display={'flex'} flexDirection={'column'} gap={'5px'}>

@@ -4,9 +4,8 @@ export interface UserEntity {
   id: string;
   email: string;
   username: string;
-  password: string;
   profile?: ProfileEntity;
   threads?: Thread[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

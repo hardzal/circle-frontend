@@ -8,13 +8,21 @@ import { useLocation } from 'react-router-dom';
 
 export default function RightBar(props: BoxProps) {
   const {
+    email,
     username,
-    profile: { fullName, bio, bannerURL, avatar, userId },
+    profile: { id, fullName, bio, bannerURL, avatar, userId },
   } = useAuthStore((state) => state.user);
 
   const { pathname } = useLocation();
 
-  const profileData = { fullName, bio, bannerURL, avatar, userId };
+  const profileData = {
+    id,
+    fullName,
+    bio,
+    bannerURL,
+    avatar,
+    userId,
+  };
 
   return (
     <Box
@@ -26,7 +34,11 @@ export default function RightBar(props: BoxProps) {
       right={'0'}
     >
       {pathname !== '/profile' && (
-        <ProfileSidebar username={username} profile={profileData} />
+        <ProfileSidebar
+          username={username}
+          profile={profileData}
+          email={email}
+        />
       )}
 
       <FollowsSidebar />
