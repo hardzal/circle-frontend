@@ -4,8 +4,13 @@ import CreateThread from './create-thread';
 import { api } from '@/libs/api';
 import { useQuery } from '@tanstack/react-query';
 import { Thread } from '@/features/thread/types/thread';
+import { useAuthStore } from '@/stores/auth';
 
 export default function Home() {
+  const {
+    profile: { userId },
+  } = useAuthStore((state) => state.user);
+
   const {
     data: threads,
     isLoading,
@@ -14,8 +19,8 @@ export default function Home() {
   } = useQuery<Thread[]>({
     queryKey: ['threads'],
     queryFn: async () => {
-      const response = await api.get(`/threads`);
-      console.log(response.data);
+      const response = await api.get(`/threads/${userId}/all`);
+
       return response.data;
     },
   });
