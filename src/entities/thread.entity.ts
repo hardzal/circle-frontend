@@ -1,5 +1,5 @@
+import { Reply } from '@/features/reply/types/reply';
 import { LikeEntity } from './like.entity';
-import { ReplyEntity } from './reply.entity';
 import { UserEntity } from './user.entity';
 
 export interface ThreadEntity {
@@ -8,7 +8,7 @@ export interface ThreadEntity {
   images: string;
   user?: UserEntity;
   likes?: LikeEntity[];
-  replies?: ReplyEntity[];
+  replies?: Reply[];
   createdAt: string;
   updatedAt: string;
 }

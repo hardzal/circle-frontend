@@ -1,6 +1,7 @@
 import CardReply from '@/features/home/components/card-reply';
 import CardThreadDetail from '@/features/home/components/card-thread-detail';
 import CreateReply from '@/features/home/components/create-reply';
+import { Reply } from '@/features/reply/types/reply';
 import { Thread } from '@/features/thread/types/thread';
 import { api } from '@/libs/api';
 import { Box, Spinner } from '@chakra-ui/react';
@@ -13,6 +14,15 @@ export default function ThreadDetail() {
     queryKey: [`threads/${threadId}`],
     queryFn: async () => {
       const response = await api.get(`/threads/${threadId}`);
+
+      return response.data;
+    },
+  });
+
+  const { data: replyData, isLoading: isLoadingReply } = useQuery<Reply[]>({
+    queryKey: [`replyData`],
+    queryFn: async () => {
+      const response = await api.get(`/replies/${threadId}`);
 
       return response.data;
     },
@@ -31,8 +41,14 @@ export default function ThreadDetail() {
               <CardThreadDetail {...data} />
               <CreateReply />
               {data.replies?.length ? (
-                <>{data?.replies?.map((reply) => <CardReply {...reply} />)}</>
-              ) : undefined}
+                isLoadingReply ? (
+                  <Spinner />
+                ) : (
+                  replyData?.map((reply) => <CardReply {...reply} />)
+                )
+              ) : (
+                <p>No one reply yet</p>
+              )}
             </>
           )}
         </>
