@@ -3,26 +3,28 @@ import { Avatar } from '@/components/ui/avatar';
 
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/libs/api';
-import { useAuthStore } from '@/stores/auth';
 import ButtonUnfollow from './components/button-unfollow';
 import ButtonFollow from './components/button-follow';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
+import { Link } from 'react-router-dom';
+import { ProfileEntity } from '@/entities/profile.entity';
+import { useEffect } from 'react';
 
 interface FollowData {
   title: string;
   key: string;
+  profile: ProfileEntity;
 }
 
-export default function FollowedList({ title }: FollowData) {
-  const {
-    profile: { userId },
-  } = useAuthStore((state) => state.user);
+export default function FollowedList({ title, profile }: FollowData) {
+  const { userId } = profile;
 
   const {
     data: users,
     isLoading,
     isError,
     failureReason,
+    refetch: refetchFollowers,
   } = useQuery<FollowToggleEntity[]>({
     queryKey: ['followers'],
     queryFn: async () => {
@@ -31,6 +33,12 @@ export default function FollowedList({ title }: FollowData) {
       return response.data.data;
     },
   });
+
+  useEffect(() => {
+    if (userId) {
+      refetchFollowers();
+    }
+  }, [userId, refetchFollowers]);
 
   return (
     <Card.Root size="sm" backgroundColor={'background'}>
@@ -62,8 +70,15 @@ export default function FollowedList({ title }: FollowData) {
                     size="lg"
                   />
                   <Box display={'flex'} flexDirection={'column'} flex={'2'}>
-                    <Text>{searchUserData.following?.profile?.fullName}</Text>
-                    <Text color={'secondary'}>
+                    <Link
+                      to={`/profile/${searchUserData.following?.username}`}
+                      className="link-profile"
+                    >
+                      <Text className="text-profile">
+                        {searchUserData.following?.profile?.fullName}
+                      </Text>
+                    </Link>
+                    <Text color={'secondary'} className="text-profile">
                       @{searchUserData.following?.username}
                     </Text>
                   </Box>

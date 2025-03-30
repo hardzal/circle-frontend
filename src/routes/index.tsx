@@ -27,7 +27,7 @@ const router = createBrowserRouter([
         element: <SearchUsers />,
       },
       {
-        path: '/follows',
+        path: '/follows/:username',
         element: <FollowsPage />,
       },
       {

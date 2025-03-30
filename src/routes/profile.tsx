@@ -111,13 +111,13 @@ export default function ProfilePage() {
             <Box display={'flex'} gap={'5px'}>
               <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
                 <Text fontWeight={'bold'}>{data?.followingCount}</Text>
-                <Link to="/follows#followings">
+                <Link to={`/follows/${username}#followings`}>
                   <Text color={'secondary'}>Following</Text>
                 </Link>
               </Box>
               <Box display={'flex'} gap={'5px'}>
                 <Text fontWeight={'bold'}>{data?.followerCount}</Text>
-                <Link to="/follows#followers">
+                <Link to={`/follows/${username}#followers`}>
                   <Text color={'secondary'}>Followers</Text>
                 </Link>
               </Box>

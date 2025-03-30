@@ -9,7 +9,7 @@ import {
   searchLogoOutline,
 } from '@/assets/icons';
 
-interface NavLinkMenu {
+export interface NavLinkMenu {
   label: string;
   path: string;
   logo: {
@@ -41,7 +41,7 @@ export const NAV_LINK_MENU: NavLinkMenu[] = [
       fill: followsLogo,
       outline: followsLogoOutline,
     },
-    path: '/follows',
+    path: `/follows`,
   },
   {
     label: 'Profile',

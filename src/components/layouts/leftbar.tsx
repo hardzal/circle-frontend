@@ -1,6 +1,6 @@
 import brandLogo from '@/assets/logo.svg';
 import logoutIcon from '@/assets/icons/logout.svg';
-import { NAV_LINK_MENU } from '@/utils/constants/nav-link-menu';
+import { NAV_LINK_MENU, NavLinkMenu } from '@/utils/constants/nav-link-menu';
 import {
   Box,
   BoxProps,
@@ -28,7 +28,7 @@ export default function LeftBar(props: BoxProps) {
   const { pathname } = useLocation();
   const inputFileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   function onClickFile() {
     inputFileRef?.current?.click();
@@ -40,6 +40,13 @@ export default function LeftBar(props: BoxProps) {
     Cookies.remove('token');
     navigate('/login');
   }
+
+  const NEW_NAV_LINK: NavLinkMenu[] = NAV_LINK_MENU.map((value) => {
+    if (value.label === 'Follows') {
+      return { ...value, path: `/follows/${user.username}` };
+    }
+    return value;
+  });
 
   return (
     <Box
@@ -57,7 +64,7 @@ export default function LeftBar(props: BoxProps) {
           flexDirection={'column'}
           gap={'8px'}
         >
-          {NAV_LINK_MENU.map(({ label, logo, path }, index) => (
+          {NEW_NAV_LINK.map(({ label, logo, path }, index) => (
             <ChakraLink
               asChild
               display={'flex'}

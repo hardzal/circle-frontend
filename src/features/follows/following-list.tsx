@@ -3,25 +3,27 @@ import { Avatar } from '@/components/ui/avatar';
 
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/libs/api';
-import { useAuthStore } from '@/stores/auth';
 import ButtonUnfollow from './components/button-unfollow';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
+import { Link } from 'react-router-dom';
+import { ProfileEntity } from '@/entities/profile.entity';
+import { useEffect } from 'react';
 
 interface FollowData {
   title: string;
   key: string;
+  profile: ProfileEntity;
 }
 
-export default function FollowingList({ title }: FollowData) {
-  const {
-    profile: { userId },
-  } = useAuthStore((state) => state.user);
+export default function FollowingList({ title, profile }: FollowData) {
+  const { userId } = profile;
 
   const {
     data: users,
     isLoading,
     isError,
     failureReason,
+    refetch: refetchFollowing,
   } = useQuery<FollowToggleEntity[]>({
     queryKey: ['followings'],
     queryFn: async () => {
@@ -30,6 +32,12 @@ export default function FollowingList({ title }: FollowData) {
       return response.data.data;
     },
   });
+
+  useEffect(() => {
+    if (userId) {
+      refetchFollowing();
+    }
+  }, [userId, refetchFollowing]);
 
   return (
     <Card.Root size="sm" backgroundColor={'background'}>
@@ -61,23 +69,25 @@ export default function FollowingList({ title }: FollowData) {
                     size="lg"
                   />
                   <Box display={'flex'} flexDirection={'column'} flex={'2'}>
-                    <Text>
-                      {searchUserData.followed?.profile?.fullName}
-                      <Text
-                        fontSize={'smaller'}
-                        display={'inline'}
-                        bgColor={'secondary'}
-                        marginLeft={'2'}
-                        color={'primary'}
-                      >
-                        <em>
-                          {' '}
-                          {searchUserData.isFollowed === true
-                            ? 'Follows you'
-                            : null}
-                        </em>
+                    <Link to={`/profile/${searchUserData.followed?.username}`}>
+                      <Text>
+                        {searchUserData.followed?.profile?.fullName}
+                        <Text
+                          fontSize={'smaller'}
+                          display={'inline'}
+                          bgColor={'secondary'}
+                          marginLeft={'2'}
+                          color={'primary'}
+                        >
+                          <em>
+                            {' '}
+                            {searchUserData.isFollowed === true
+                              ? 'Follows you'
+                              : null}
+                          </em>
+                        </Text>
                       </Text>
-                    </Text>
+                    </Link>
                     <Text color={'secondary'}>
                       @{searchUserData.followed?.username}
                     </Text>
