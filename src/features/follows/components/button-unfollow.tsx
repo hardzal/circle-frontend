@@ -1,14 +1,15 @@
 import { Button, CloseButton, Dialog, Portal } from '@chakra-ui/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useUnfollow } from '../hooks/use-unfollow';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 
 type Props = {
   userId: string;
   searchUserData: FollowToggleEntity;
+  buttonStyle: React.CSSProperties;
 };
 
-export default function ButtonUnfollow({ searchUserData }: Props) {
+export default function ButtonUnfollow({ searchUserData, buttonStyle }: Props) {
   const { isPendingUnfollow, onUnfollow } = useUnfollow();
 
   const [buttonText, setButtonText] = useState<string>('Following');
@@ -27,14 +28,17 @@ export default function ButtonUnfollow({ searchUserData }: Props) {
   const defaultStyle = {
     color: 'white',
     border: '1px solid white',
+    ...buttonStyle,
   };
 
   const hoveredStyle = {
     color: 'red',
     border: '1px solid red',
+    ...buttonStyle,
   };
 
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <Dialog.Root
@@ -45,7 +49,6 @@ export default function ButtonUnfollow({ searchUserData }: Props) {
         <Dialog.Trigger asChild>
           <Button
             variant={'outline'}
-            flex={'1'}
             borderRadius={'30px'}
             colorPalette="red"
             style={isHovered ? hoveredStyle : defaultStyle}

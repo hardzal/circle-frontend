@@ -46,6 +46,10 @@ export function useUnfollow() {
           queryKey: ['userSuggest'],
         });
 
+        await queryClient.invalidateQueries({
+          queryKey: ['followCount'],
+        });
+
         return toaster.create({
           title: 'Done unfollow',
           type: 'success',

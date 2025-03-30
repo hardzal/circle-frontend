@@ -19,14 +19,12 @@ export function useFollow(userId: string) {
         `/follows/${userId}`,
         data
       );
-      console.log('follow back', response.data);
+
       return response.data;
     },
 
     onError: (error: Error) => {
       if (isAxiosError(error)) {
-        console.log('follow back error', error.response?.data.message);
-
         return toaster.create({
           title: error.response?.data.message,
           type: 'error',
@@ -50,6 +48,10 @@ export function useFollow(userId: string) {
 
       await queryClient.invalidateQueries({
         queryKey: ['userSuggest'],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['followCount'],
       });
 
       return toaster.create({

@@ -29,7 +29,7 @@ export default function FollowedList({ title, profile }: FollowData) {
     queryKey: ['followers'],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followers`);
-      console.log('followers data', response.data);
+
       return response.data.data;
     },
   });
@@ -87,12 +87,18 @@ export default function FollowedList({ title, profile }: FollowData) {
                       userId={userId}
                       searchUserData={searchUserData}
                       key={userId}
+                      buttonStyle={{
+                        flex: '1',
+                      }}
                     />
                   ) : (
                     <ButtonFollow
                       userId={userId}
                       searchUserData={searchUserData}
                       key={userId}
+                      buttonStyle={{
+                        flex: '1',
+                      }}
                     />
                   )}
                 </Box>

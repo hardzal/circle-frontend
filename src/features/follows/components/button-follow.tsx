@@ -5,19 +5,24 @@ import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 type Props = {
   userId: string;
   searchUserData: FollowToggleEntity;
+  buttonStyle: React.CSSProperties;
 };
 
-export default function ButtonFollow({ userId, searchUserData }: Props) {
+export default function ButtonFollow({
+  userId,
+  searchUserData,
+  buttonStyle,
+}: Props) {
   const { isPendingFollow, onFollow } = useFollow(userId);
-  console.log('Data', searchUserData);
+
   return (
     <>
       <Button
         variant={'outline'}
-        flex={'1'}
         border={'1px solid white'}
         borderRadius={'30px'}
         disabled={isPendingFollow}
+        style={buttonStyle}
         onClick={() =>
           onFollow({ followedId: searchUserData?.following?.id as string })
         }

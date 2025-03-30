@@ -5,7 +5,10 @@ import { Box, Text, Image, Spinner } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { UserProfile } from '../types/user';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { FollowToggleEntity } from '@/entities/followtoggle.entity';
+import ButtonUnfollow from '@/features/follows/components/button-unfollow';
+import ButtonFollow from '@/features/follows/components/button-follow';
 
 interface followInfo {
   followerCount: number;
@@ -56,12 +59,39 @@ export default function ProfileUserPage() {
     enabled: !!userId,
   });
 
+  const {
+    data: userFollow,
+    isFetching: isFetchFollowProfile,
+    refetch: refetchFollowProfile,
+  } = useQuery<FollowToggleEntity>({
+    queryKey: ['followings'],
+    queryFn: async () => {
+      const response = await api.get(`/follows/${userId}/follow`);
+
+      return response.data.data;
+    },
+  });
+
   useEffect(() => {
     if (userId) {
       refetchFollow();
       refetchThreads();
+      refetchFollowProfile();
     }
-  }, [userId, refetchFollow, refetchThreads]);
+  }, [userId, refetchFollow, refetchThreads, refetchFollowProfile]);
+
+  const buttonStyling: React.CSSProperties = {
+    position: 'relative',
+    top: '10px',
+    color: 'white',
+    border: '1px solid white',
+    borderRadius: '30px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 'auto',
+    minWidth: '150px',
+  };
 
   return (
     <>
@@ -89,6 +119,7 @@ export default function ProfileUserPage() {
               position={'relative'}
               bottom={'35px'}
               marginBottom={'0px'}
+              width={'100%'}
             >
               <Image
                 position={'relative'}
@@ -106,6 +137,24 @@ export default function ProfileUserPage() {
                 marginLeft={'15px'}
                 alt={`${user?.profile?.fullName}`}
               />
+
+              {isFetchFollowProfile ? (
+                <Spinner />
+              ) : userFollow?.isFollowing ? (
+                <ButtonUnfollow
+                  userId={userId as string}
+                  searchUserData={userFollow}
+                  key={userId}
+                  buttonStyle={buttonStyling}
+                />
+              ) : (
+                <ButtonFollow
+                  userId={userId as string}
+                  searchUserData={userFollow as FollowToggleEntity}
+                  key={userId}
+                  buttonStyle={buttonStyling}
+                />
+              )}
             </Box>
 
             <Box

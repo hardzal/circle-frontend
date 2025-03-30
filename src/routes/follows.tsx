@@ -26,9 +26,11 @@ export default function FollowsPage() {
   });
 
   useEffect(() => {
-    if (profileData?.userId === undefined) {
-      navigate('/NotFound', { replace: true });
-    }
+    setTimeout(() => {
+      if (profileData?.userId === undefined) {
+        navigate('/NotFound', { replace: true });
+      }
+    }, 1000);
   }, [profileData, navigate]);
 
   if (!profileData) {
