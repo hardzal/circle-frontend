@@ -92,7 +92,7 @@ export default function ProfileUserPage() {
     width: 'auto',
     minWidth: '150px',
   };
-
+  console.log('banner', user?.profile?.bannerURL);
   return (
     <>
       {isFetchingUser && isFetchingFollow ? (
@@ -104,7 +104,7 @@ export default function ProfileUserPage() {
           </Text>
           <Box display={'flex'} flexDirection={'column'}>
             <Box
-              backgroundImage={`url("${user?.profile?.bannerURL || 'https://api.dicebear.com/9.x/glass/svg?seed=' + username}}")`}
+              backgroundImage={`url(${user?.profile?.bannerURL})`}
               padding={'15px'}
               borderRadius={'lg'}
               height={'140px'}
@@ -166,6 +166,13 @@ export default function ProfileUserPage() {
             >
               <Text>{`${user?.profile?.fullName}`}</Text>
               <Text color={'secondary'}>@{`${username}`}</Text>
+              <Text fontSize={'smaller'} color={'secondar'}>
+                {userFollow?.isFollowing === true ? (
+                  <em style={{ backgroundColor: 'gray', padding: '3px' }}>
+                    Follows you
+                  </em>
+                ) : null}
+              </Text>
               <Text>{user?.profile?.bio}</Text>
               <Box display={'flex'} gap={'5px'}>
                 <Box display={'flex'} gap={'5px'} marginRight={'5px'}>

@@ -64,6 +64,9 @@ export default function FollowsSidebar({ background = 'background' }) {
                   userId={userId}
                   searchUserData={searchUserData}
                   key={userId}
+                  buttonStyle={{
+                    flex: '1',
+                  }}
                 />
               </Box>
             ))}

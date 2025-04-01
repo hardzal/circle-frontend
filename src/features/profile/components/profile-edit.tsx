@@ -3,6 +3,7 @@ import {
   UpdateProfileSchemaDTO,
 } from '@/utils/schemas/user.schema';
 import {
+  Box,
   Button,
   CloseButton,
   Dialog,
@@ -10,16 +11,18 @@ import {
   Input,
   Portal,
   Spinner,
+  Image,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { UserResponse } from '../dto/user';
 import { api } from '@/libs/api';
 import { isAxiosError } from 'axios';
 import { toaster } from '@/components/ui/toaster';
 import { useAuthStore } from '@/stores/auth';
+import { LuUpload } from 'react-icons/lu';
 
 interface userProfile {
   id: string;
@@ -38,25 +41,54 @@ export default function ProfileEdit({
   username,
   email,
   bio,
+  bannerURL,
+  avatar,
   userId,
 }: userProfile) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { setUser } = useAuthStore();
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const inputFileAvatarRef = useRef<HTMLInputElement | null>(null);
+
+  const [previewURL, setPreviewURL] = useState<string | null>(null);
+  const [previewURLAvatar, setPreviewURLAvatar] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    reset,
   } = useForm<UpdateProfileSchemaDTO>({
     mode: 'onChange',
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
-      fullName: fullName,
-      bio: bio,
+      fullName,
+      bio,
     },
   });
+
+  console.log(errors);
+
+  function onClickFile() {
+    inputFileRef?.current?.click();
+  }
+  function onClickFileAvatar() {
+    inputFileAvatarRef?.current?.click();
+  }
+
+  const {
+    ref: registerImagesRef,
+    onChange: registerImagesOnChange,
+    ...restRegisterImages
+  } = register('bannerURL');
+
+  const {
+    ref: registerImagesAvatarRef,
+    onChange: registerImagesAvatarOnChange,
+    ...restRegisterAvatarImages
+  } = register('avatar');
 
   const queryClient = useQueryClient();
 
@@ -69,6 +101,14 @@ export default function ProfileEdit({
 
         if (data.bio !== undefined) {
           formData.append('bio', data.bio);
+        }
+
+        if (data.avatar != undefined && data.avatar.length > 0) {
+          formData.append('avatar', data.avatar[0]);
+        }
+
+        if (data.bannerURL != undefined && data.bannerURL.length > 0) {
+          formData.append('bannerURL', data.bannerURL[0]);
         }
 
         const response = await api.put<UserResponse>(
@@ -113,6 +153,28 @@ export default function ProfileEdit({
 
   async function onUpdateProfile(data: UpdateProfileSchemaDTO) {
     await mutateEditProfile(data);
+    console.log(data);
+    setPreviewURL('');
+    setPreviewURLAvatar('');
+    reset();
+  }
+
+  function handlePreview(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+
+      setPreviewURL(url);
+    }
+  }
+
+  function handlePreviewAvatar(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+
+      setPreviewURLAvatar(url);
+    }
   }
 
   return (
@@ -150,12 +212,102 @@ export default function ProfileEdit({
                     gap: '12px',
                   }}
                 >
-                  <Field.Root>
-                    <Input placeholder="Username" value={username} disabled />
-                  </Field.Root>
-                  <Field.Root>
-                    <Input placeholder="Email" value={email} disabled />
-                  </Field.Root>
+                  <Input
+                    id="bannerURL"
+                    type="file"
+                    {...restRegisterImages}
+                    onChange={(e) => {
+                      console.log(e.target.files);
+                      handlePreview(e);
+                      registerImagesOnChange(e);
+                    }}
+                    ref={(e) => {
+                      registerImagesRef(e);
+                      inputFileRef.current = e;
+                    }}
+                    hidden
+                  />
+                  <Button
+                    onClick={onClickFile}
+                    variant={'ghost'}
+                    cursor={'pointer'}
+                    position={'absolute'}
+                    left="50%" // Move the left edge to 50%
+                    top="25%"
+                    zIndex={'3'}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignContent={'center'}
+                    backgroundColor={'blackAlpha.500'}
+                  >
+                    <LuUpload />
+                  </Button>
+                  <label
+                    htmlFor="bannerURL"
+                    style={{ backgroundColor: 'Highlight' }}
+                  >
+                    <Box
+                      backgroundImage={`url("${previewURL || bannerURL}  ")`}
+                      padding={'15px'}
+                      borderRadius={'lg'}
+                      height={'200px'}
+                      position={'relative'}
+                      backgroundSize={'cover'}
+                      zIndex={'1'}
+                    ></Box>
+                  </label>
+
+                  <Input
+                    id="avatar"
+                    type="file"
+                    {...restRegisterAvatarImages}
+                    onChange={(e) => {
+                      console.log(e.target.files);
+                      handlePreviewAvatar(e);
+                      registerImagesAvatarOnChange(e);
+                    }}
+                    ref={(e) => {
+                      registerImagesAvatarRef(e);
+                      inputFileAvatarRef.current = e;
+                    }}
+                    hidden
+                  />
+                  <Button
+                    onClick={onClickFileAvatar}
+                    variant={'ghost'}
+                    cursor={'pointer'}
+                    position={'absolute'}
+                    top={'45%'}
+                    left={'10%'}
+                    zIndex={'11'}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignContent={'center'}
+                    backgroundColor={'blackAlpha.200'}
+                  >
+                    <LuUpload />
+                  </Button>
+                  <Box
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    zIndex={'10'}
+                    position={'relative'}
+                    bottom={'30px'}
+                  >
+                    <label htmlFor="avatar">
+                      <Image
+                        src={previewURLAvatar || avatar || ''}
+                        boxSize="80px"
+                        borderRadius="full"
+                        backgroundColor={'background'}
+                        border={'1px solid background'}
+                        fit="cover"
+                        marginLeft={'15px'}
+                        alt={fullName}
+                      />
+                    </label>
+                  </Box>
                   <Field.Root>
                     <Input
                       placeholder="Full Name"
@@ -180,11 +332,6 @@ export default function ProfileEdit({
                     color={'white'}
                     type="submit"
                     disabled={isPendingEditProfile ? true : false}
-                    onClick={(e) => {
-                      e.currentTarget?.blur();
-                      handleSubmit(onUpdateProfile)();
-                      console.log('submitted');
-                    }}
                   >
                     {isPendingEditProfile ? <Spinner /> : 'Update'}
                   </Button>
@@ -194,14 +341,6 @@ export default function ProfileEdit({
                 <Dialog.ActionTrigger asChild>
                   <Button variant="outline">Close</Button>
                 </Dialog.ActionTrigger>
-                {/* <Button
-                        bgColor={'brand'}
-                        onClick={() => {
-                          setIsOpen(false);
-                        }}
-                      >
-                        Submit
-                      </Button> */}
               </Dialog.Footer>
               <Dialog.CloseTrigger asChild>
                 <CloseButton size="sm" />

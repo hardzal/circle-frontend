@@ -64,7 +64,7 @@ export default function CreateThread() {
       const formData = new FormData();
       formData.append('content', data.content);
 
-      if (data.images.length > 0) {
+      if (data.images != undefined && data.images.length > 0) {
         formData.append('images', data.images[0]);
       }
 

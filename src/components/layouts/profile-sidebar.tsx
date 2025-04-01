@@ -49,6 +49,7 @@ export default function ProfileSidebar({
             borderRadius={'lg'}
             height={'100px'}
             position={'relative'}
+            backgroundSize={'cover'}
             zIndex={'1'}
           ></Box>
 
