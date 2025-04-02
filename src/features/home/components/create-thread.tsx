@@ -93,6 +93,10 @@ export default function CreateThread() {
         queryKey: ['threads'],
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: ['threadImages'],
+      });
+
       toaster.create({
         title: data.message,
         type: 'success',
@@ -150,7 +154,7 @@ export default function CreateThread() {
             <Field.ErrorText>{errors.content?.message}</Field.ErrorText>
           </Field.Root>
 
-          <Button variant={'ghost'} onClick={onClickFile} type="submit">
+          <Button variant={'ghost'} onClick={onClickFile} type="button">
             <Image src={galleryAddLogo} width={'27px'} />
           </Button>
           <Input

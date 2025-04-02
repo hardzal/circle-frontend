@@ -39,7 +39,7 @@ export default function ThreadDetail() {
           {data && (
             <>
               <CardThreadDetail {...data} />
-              <CreateReply />
+              <CreateReply thread={threadId} />
               {data.replies?.length ? (
                 isLoadingReply ? (
                   <Spinner />

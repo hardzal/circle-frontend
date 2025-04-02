@@ -55,6 +55,7 @@ export default function LeftBar(props: BoxProps) {
       position={'fixed'}
       top={'0'}
       left={'0'}
+      width={'23%'}
     >
       <Box padding={'40px'} {...props}>
         <Image src={brandLogo} width={'220px'} padding={'0px 16px'} />

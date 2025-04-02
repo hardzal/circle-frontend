@@ -26,7 +26,7 @@ import { LikeResponse } from '@/features/like/dto/like';
 import { Thread } from '@/features/thread/types/thread';
 import { LuCheck, LuEllipsis, LuPencilLine, LuX } from 'react-icons/lu';
 
-import { formatDistanceStrict } from 'date-fns';
+import { formatDistanceToNowStrict } from 'date-fns';
 import { useAuthStore } from '@/stores/auth';
 import { ThreadResponse } from '@/features/thread/dto/thread';
 import {
@@ -159,6 +159,10 @@ export default function CardThread(thread: Thread) {
           queryKey: ['threads'],
         });
 
+        await queryClient.invalidateQueries({
+          queryKey: ['threadImages'],
+        });
+
         toaster.create({
           title: data.message,
           type: 'success',
@@ -266,11 +270,9 @@ export default function CardThread(thread: Thread) {
           <Text color={'secondary'}>•</Text>
           <Text color={'secondary'}>
             {' '}
-            {formatDistanceStrict(
-              new Date(thread.createdAt).getTime(),
-              new Date().getTime(),
-              { addSuffix: true }
-            )}
+            {formatDistanceToNowStrict(new Date(thread.createdAt).getTime(), {
+              addSuffix: true,
+            })}
           </Text>
 
           <Menu.Root>

@@ -14,8 +14,17 @@ import { api } from '@/libs/api';
 import { ReplyResponse } from '@/features/reply/dto/reply';
 import { isAxiosError } from 'axios';
 
-export default function CreateReply() {
-  const { threadId } = useParams();
+interface CreateReplyProps {
+  thread?: string;
+}
+
+export default function CreateReply({ thread }: CreateReplyProps) {
+  let { threadId } = useParams();
+
+  if (threadId === null || threadId === undefined) {
+    threadId = thread;
+  }
+
   const {
     user: {
       profile: { fullName, avatar },
@@ -68,6 +77,14 @@ export default function CreateReply() {
         queryKey: [`threads/${threadId}`],
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: ['replyData'],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['replyDataImages'],
+      });
+
       toaster.create({
         title: data.message,
         type: 'success',
@@ -86,7 +103,7 @@ export default function CreateReply() {
         display={'flex'}
         alignItems={'center'}
         gap={'20px'}
-        padding={'20px 0px'}
+        padding={'20px 20px'}
       >
         <Avatar
           name={fullName}
@@ -110,9 +127,9 @@ export default function CreateReply() {
           color={'white'}
           disabled={isPending ? true : false}
         >
-          {isPending ? <Spinner /> : 'Post'}
+          {isPending ? <Spinner /> : 'Reply'}
         </Button>
-      </Box>{' '}
+      </Box>
     </form>
   );
 }

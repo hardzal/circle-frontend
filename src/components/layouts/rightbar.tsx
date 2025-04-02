@@ -32,6 +32,7 @@ export default function RightBar(props: BoxProps) {
       position={'fixed'}
       top={'0'}
       right={'0'}
+      width={'23%'}
     >
       {pathname !== '/profile' && (
         <ProfileSidebar

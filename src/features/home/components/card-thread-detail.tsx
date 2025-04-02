@@ -12,6 +12,7 @@ import { isAxiosError } from 'axios';
 import { toaster } from '@/components/ui/toaster';
 import { LikeResponse } from '@/features/like/dto/like';
 import { Thread } from '@/features/thread/types/thread';
+import { formatDistanceToNowStrict } from 'date-fns';
 
 export default function CardThreadDetail(thread: Thread) {
   const { threadId } = useParams();
@@ -44,6 +45,10 @@ export default function CardThreadDetail(thread: Thread) {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [`threads/${threadId}`],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: [`threadImages`],
       });
     },
   });
@@ -80,6 +85,10 @@ export default function CardThreadDetail(thread: Thread) {
       await queryClient.invalidateQueries({
         queryKey: [`threads/${threadId}`],
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: [`threadImages`],
+      });
     },
   });
 
@@ -98,7 +107,7 @@ export default function CardThreadDetail(thread: Thread) {
       gap={'16px'}
       borderBottom={'1px solid'}
       borderColor={'outline'}
-      padding={'16px 0px'}
+      padding={'16px 20px'}
     >
       <Box display={'flex'} gap={'4px'}>
         <Avatar
@@ -117,9 +126,20 @@ export default function CardThreadDetail(thread: Thread) {
 
       <Box display={'flex'} flexDirection={'column'} gap={'4px'}>
         <Text>{thread.content}</Text>
+        {thread.images !== null ? (
+          <Image
+            objectFit={'contain'}
+            maxHeight={'300px'}
+            maxWidth={'300px'}
+            src={thread.images || ''}
+          />
+        ) : null}
 
         <Text color={'secondary'} padding={'10px'}>
-          {new Date(thread.createdAt).getHours()} hour ago
+          {' '}
+          {formatDistanceToNowStrict(new Date(thread.createdAt).getTime(), {
+            addSuffix: true,
+          })}
         </Text>
 
         <Box display={'flex'}>

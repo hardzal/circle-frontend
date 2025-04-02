@@ -92,7 +92,7 @@ export default function ProfileUserPage() {
     width: 'auto',
     minWidth: '150px',
   };
-  console.log('banner', user?.profile?.bannerURL);
+
   return (
     <>
       {isFetchingUser && isFetchingFollow ? (
@@ -192,6 +192,7 @@ export default function ProfileUserPage() {
           </Box>
         </Box>
       )}
+
       <Box display={'flex'} justifyContent={'space-around'}>
         <Text>All Post</Text>
         <Text>Media</Text>

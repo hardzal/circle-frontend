@@ -11,6 +11,7 @@ import {
 import { isAxiosError } from 'axios';
 import { toaster } from '@/components/ui/toaster';
 import { Reply } from '@/features/reply/types/reply';
+import { formatDistanceToNowStrict } from 'date-fns';
 
 export default function CardReply(reply: Reply) {
   console.log(reply);
@@ -112,7 +113,7 @@ export default function CardReply(reply: Reply) {
       gap={'16px'}
       borderBottom={'1px solid'}
       borderColor={'outline'}
-      padding={'30px 0px'}
+      padding={'30px 20px'}
     >
       <Avatar
         name={reply.user?.profile?.fullName || ''}
@@ -129,7 +130,10 @@ export default function CardReply(reply: Reply) {
           <Text color={'secondary'}>@{reply.user?.username}</Text>
           <Text color={'secondary'}>•</Text>
           <Text color={'secondary'}>
-            {new Date(reply.createdAt).getHours()}h
+            {' '}
+            {formatDistanceToNowStrict(new Date(reply.createdAt).getTime(), {
+              addSuffix: true,
+            })}
           </Text>
         </Box>
         <Text cursor={'pointer'}>{reply.content}</Text>
