@@ -6,6 +6,7 @@ import ProfileEdit from '@/features/profile/components/profile-edit';
 interface UserProfile {
   email: string;
   username: string;
+  password: string;
   profile: {
     id: string;
     userId: string;
@@ -23,6 +24,7 @@ interface followInfo {
 export default function ProfileSidebar({
   email,
   username,
+  password,
   profile,
 }: UserProfile) {
   const { data } = useQuery<followInfo>({
@@ -34,7 +36,7 @@ export default function ProfileSidebar({
     },
   });
 
-  const profileEdit = { ...profile, username, email };
+  const profileEdit = { ...profile, username, email, password };
 
   return (
     <>
