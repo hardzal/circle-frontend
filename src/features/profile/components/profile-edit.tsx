@@ -29,6 +29,7 @@ interface userProfile {
   fullName: string;
   username: string;
   email: string;
+  password: string;
   bio?: string;
   avatar?: string;
   bannerURL?: string;
@@ -39,6 +40,7 @@ export default function ProfileEdit({
   id,
   fullName,
   username,
+  password,
   email,
   bio,
   bannerURL,
@@ -68,8 +70,6 @@ export default function ProfileEdit({
       bio,
     },
   });
-
-  console.log(errors);
 
   function onClickFile() {
     inputFileRef?.current?.click();
@@ -138,7 +138,7 @@ export default function ProfileEdit({
           queryKey: ['userProfile'],
         });
 
-        const user = { id: userId, username, email };
+        const user = { id: userId, username, email, password };
 
         if (data.data !== undefined) {
           setUser({ ...user, profile: data.data });

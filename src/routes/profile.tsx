@@ -26,6 +26,7 @@ export default function ProfilePage() {
   const {
     username,
     email,
+    password,
     profile: { id, fullName, bio, bannerURL, avatar, userId },
   } = useAuthStore((state) => state.user);
 
@@ -33,6 +34,7 @@ export default function ProfilePage() {
     id,
     username,
     email,
+    password,
     fullName,
     bio,
     bannerURL,
