@@ -35,6 +35,9 @@ export default function LeftBar(props: BoxProps) {
   }
 
   function onLogout() {
+    if (!confirm('are you sure logout?')) {
+      return;
+    }
     logout();
     // localStorage.removeItem('token');
     Cookies.remove('token');
@@ -107,16 +110,11 @@ export default function LeftBar(props: BoxProps) {
                 <Textarea placeholder="What is happening?!" />
               </DialogBody>
               <DialogFooter display={'flex'} flex={'content'}>
-                <Button
-                  variant={'ghost'}
-                  onClick={onClickFile}
-                  disabled
-                  cursor={'disabled'}
-                >
+                <Button variant={'ghost'} onClick={onClickFile}>
                   <Image src={galleryAddLogo} width={'27px'} />
                 </Button>
 
-                <Button backgroundColor={'brand'} disabled color={'white'}>
+                <Button backgroundColor={'brand'} color={'white'}>
                   Post
                 </Button>
               </DialogFooter>
