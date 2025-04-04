@@ -10,6 +10,7 @@ export default function RightBar(props: BoxProps) {
   const {
     email,
     username,
+    password,
     profile: { id, fullName, bio, bannerURL, avatar, userId },
   } = useAuthStore((state) => state.user);
 
@@ -39,6 +40,7 @@ export default function RightBar(props: BoxProps) {
           username={username}
           profile={profileData}
           email={email}
+          password={password}
         />
       )}
 
