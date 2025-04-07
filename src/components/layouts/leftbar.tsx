@@ -6,7 +6,10 @@ import {
   BoxProps,
   Button,
   Link as ChakraLink,
+  Field,
   Image,
+  Input,
+  Spinner,
   Text,
   Textarea,
 } from '@chakra-ui/react';
@@ -20,19 +23,35 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { galleryAddLogo } from '@/assets/icons';
-import { useRef } from 'react';
 import { useAuthStore } from '@/stores/auth';
 import Cookies from 'js-cookie';
+import { useCreateThreads } from '@/features/home/hooks/use-create-thread';
 
 export default function LeftBar(props: BoxProps) {
   const { pathname } = useLocation();
-  const inputFileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
+
+  const {
+    register,
+    onSubmit,
+    errors,
+    handleSubmit,
+    handlePreview,
+    isPending,
+    previewURL,
+    inputFileRef,
+  } = useCreateThreads();
 
   function onClickFile() {
     inputFileRef?.current?.click();
   }
+
+  const {
+    ref: registerImagesRef,
+    onChange: registerImagesOnChange,
+    ...restRegisterImages
+  } = register('images');
 
   function onLogout() {
     if (!confirm('are you sure logout?')) {
@@ -106,19 +125,57 @@ export default function LeftBar(props: BoxProps) {
               </ChakraLink>
             </DialogTrigger>
             <DialogContent>
-              <DialogBody marginTop={'35px'}>
-                <Textarea placeholder="What is happening?!" />
-              </DialogBody>
-              <DialogFooter display={'flex'} flex={'content'}>
-                <Button variant={'ghost'} onClick={onClickFile}>
-                  <Image src={galleryAddLogo} width={'27px'} />
-                </Button>
-
-                <Button backgroundColor={'brand'} color={'white'}>
-                  Post
-                </Button>
-              </DialogFooter>
-              <DialogCloseTrigger />
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <DialogBody
+                  marginTop={'35px'}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  flexDirection={'column'}
+                >
+                  <Field.Root invalid={!!errors.content?.message}>
+                    <Textarea
+                      placeholder="What is happening?!"
+                      {...register('content')}
+                    />
+                    <Field.ErrorText>{errors.content?.message}</Field.ErrorText>
+                  </Field.Root>
+                  <Image
+                    objectFit={'contain'}
+                    maxHeight={'300px'}
+                    maxWidth={'300px'}
+                    marginTop={'10px'}
+                    src={previewURL ?? ''}
+                  />
+                </DialogBody>
+                <DialogFooter display={'flex'} flex={'content'}>
+                  <Button variant={'ghost'} onClick={onClickFile}>
+                    <Image src={galleryAddLogo} width={'27px'} />
+                  </Button>
+                  <Input
+                    type={'file'}
+                    hidden
+                    {...restRegisterImages}
+                    onChange={(e) => {
+                      handlePreview(e);
+                      registerImagesOnChange(e);
+                    }}
+                    ref={(e) => {
+                      registerImagesRef(e);
+                      inputFileRef.current = e;
+                    }}
+                  />
+                  <Button
+                    backgroundColor={'brand'}
+                    color={'white'}
+                    disabled={isPending ? true : false}
+                    type="submit"
+                  >
+                    {isPending ? <Spinner /> : 'Post'}
+                  </Button>
+                </DialogFooter>
+                <DialogCloseTrigger />
+              </form>
             </DialogContent>
           </DialogRoot>
         </Box>

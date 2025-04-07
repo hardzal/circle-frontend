@@ -1,7 +1,15 @@
 import CardThread from '@/features/home/components/card-thread';
 import { Thread } from '@/features/thread/types/thread';
 import { api } from '@/libs/api';
-import { Box, Text, Image, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Text,
+  Image,
+  Spinner,
+  Tabs,
+  Link as ChakraLink,
+  Grid,
+} from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { UserProfile } from '../types/user';
@@ -9,6 +17,7 @@ import React, { useEffect } from 'react';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 import ButtonUnfollow from '@/features/follows/components/button-unfollow';
 import ButtonFollow from '@/features/follows/components/button-follow';
+import ProfileImage from './profile-image';
 
 interface followInfo {
   followerCount: number;
@@ -72,13 +81,35 @@ export default function ProfileUserPage() {
     },
   });
 
+  const {
+    data: threadImages,
+    isLoading: isLoadingImages,
+    refetch: refetchProfileImages,
+    isError: isErrorImages,
+    failureReason: failureReasonImages,
+  } = useQuery<Thread[]>({
+    queryKey: ['threadImages'],
+    queryFn: async () => {
+      const response = await api.get(`/threads/${userId}/images`);
+
+      return response.data.data;
+    },
+  });
+
   useEffect(() => {
     if (userId) {
       refetchFollow();
       refetchThreads();
       refetchFollowProfile();
+      refetchProfileImages();
     }
-  }, [userId, refetchFollow, refetchThreads, refetchFollowProfile]);
+  }, [
+    userId,
+    refetchFollow,
+    refetchThreads,
+    refetchFollowProfile,
+    refetchProfileImages,
+  ]);
 
   const buttonStyling: React.CSSProperties = {
     position: 'relative',
@@ -193,11 +224,12 @@ export default function ProfileUserPage() {
         </Box>
       )}
 
-      <Box display={'flex'} justifyContent={'space-around'}>
+      {/* <Box display={'flex'} justifyContent={'space-around'}>
         <Text>All Post</Text>
         <Text>Media</Text>
-      </Box>
-      <Box display={'flex'} height={'5px'}>
+      </Box> */}
+
+      {/* <Box display={'flex'} height={'5px'}>
         <hr style={{ backgroundColor: 'green', height: '5px', width: '50%' }} />
         <hr />
       </Box>
@@ -215,7 +247,76 @@ export default function ProfileUserPage() {
             ))}
           </Box>
         )}
-      </Box>
+      </Box> */}
+
+      <Tabs.Root defaultValue="posts">
+        <Tabs.List display={'flex'} justifyContent={'space-around'}>
+          <Tabs.Trigger value="posts" asChild borderBottomColor={'green'}>
+            <ChakraLink unstyled href="#posts">
+              <Text>All Post</Text>
+            </ChakraLink>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="medias" asChild>
+            <ChakraLink unstyled href="#medias">
+              <Text>Media</Text>
+            </ChakraLink>
+          </Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value="posts">
+          <Box display={'flex'} flexDirection={'column'} gap={'16px'}>
+            {isError && <Text color={'red'}>{failureReason?.message}</Text>}
+            {isFetchingThreads ? (
+              <Box display={'flex'} justifyContent={'center'} padding={'50px'}>
+                <Spinner />
+              </Box>
+            ) : (
+              <Box display={'flex'} flexDirection={'column'} gap={'16px'}>
+                {threads?.map((thread: Thread) => (
+                  <CardThread {...thread} key={thread.id} />
+                ))}
+              </Box>
+            )}
+          </Box>
+        </Tabs.Content>
+        <Tabs.Content value="medias">
+          {/* <Text>Media Profile here</Text> */}
+          {isErrorImages && (
+            <Text color={'red'}>{failureReasonImages?.message}</Text>
+          )}
+          {isLoadingImages ? (
+            <Box display={'flex'} justifyContent={'center'} padding={'50px'}>
+              <Spinner />
+            </Box>
+          ) : (
+            <Grid
+              templateColumns="repeat(auto-fit, minmax(150px, 1fr))"
+              gap={4}
+              p={4}
+            >
+              {threadImages
+                ?.filter((data) => data !== undefined && data.images !== null)
+                .map((thread, index) => (
+                  <Box
+                    key={index}
+                    borderRadius="md"
+                    overflow="hidden"
+                    boxShadow="md"
+                    _hover={{ transform: 'scale(1.05)', transition: '0.3s' }}
+                  >
+                    {/* <Image
+                            src={thread.images}
+                            alt={`Gallery ${index}`}
+                            objectFit="cover"
+                            width="100%"
+                          /> */}
+                    <ProfileImage {...thread} />
+                  </Box>
+                ))}
+            </Grid>
+          )}
+        </Tabs.Content>
+      </Tabs.Root>
     </>
   );
 }

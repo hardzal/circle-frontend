@@ -151,10 +151,6 @@ export default function ProfilePage() {
           </Box>
         </Box>
       </Box>
-      {/* <Box display={'flex'} justifyContent={'space-around'}>
-        <Text>All Post</Text>
-        <Text>Media</Text>
-      </Box> */}
 
       <Tabs.Root defaultValue="posts">
         <Tabs.List display={'flex'} justifyContent={'space-around'}>

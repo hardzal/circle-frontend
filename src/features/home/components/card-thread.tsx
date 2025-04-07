@@ -12,7 +12,7 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -266,18 +266,22 @@ export default function CardThread(thread: Thread) {
       >
         <Box display={'flex'} gap={'10px'} justifyContent={'start-end'}>
           <Text fontWeight={'bold'}>{thread.user?.profile?.fullName}</Text>
-          <Text color={'secondary'}>@{thread.user?.username}</Text>
+          <Link to={`/profile/${thread.user?.username}`}>
+            <Text color={'secondary'}>@{thread.user?.username}</Text>
+          </Link>
           <Text color={'secondary'}>•</Text>
-          <Text color={'secondary'}>
-            {' '}
-            {formatDistanceToNowStrict(new Date(thread.createdAt).getTime(), {
-              addSuffix: true,
-            })}
-          </Text>
+          <Link to={`/thread/${thread.id}`}>
+            <Text color={'secondary'}>
+              {' '}
+              {formatDistanceToNowStrict(new Date(thread.createdAt).getTime(), {
+                addSuffix: true,
+              })}
+            </Text>
+          </Link>
 
           <Menu.Root>
             <Menu.Trigger asChild>
-              <Button size="sm" variant="ghost">
+              <Button size="xs" variant="ghost">
                 <LuEllipsis />
               </Button>
             </Menu.Trigger>
