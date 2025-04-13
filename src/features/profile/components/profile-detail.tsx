@@ -13,7 +13,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { UserProfile } from '../types/user';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 import ButtonUnfollow from '@/features/follows/components/button-unfollow';
 import ButtonFollow from '@/features/follows/components/button-follow';
@@ -41,24 +41,19 @@ export default function ProfileUserPage() {
   const {
     data: threads,
     isFetching: isFetchingThreads,
-    refetch: refetchThreads,
     isError,
     failureReason,
   } = useQuery<Thread[]>({
     queryKey: ['profileThreads', userId],
+    enabled: !!userId,
     queryFn: async () => {
       const response = await api.get(`/threads/${userId}/user`);
 
       return response.data;
     },
-    enabled: !!userId,
   });
 
-  const {
-    data,
-    isFetching: isFetchingFollow,
-    refetch: refetchFollow,
-  } = useQuery<followInfo>({
+  const { data, isFetching: isFetchingFollow } = useQuery<followInfo>({
     queryKey: ['userFollowCount', userId],
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/count`);
@@ -68,48 +63,31 @@ export default function ProfileUserPage() {
     enabled: !!userId,
   });
 
-  const {
-    data: userFollow,
-    isFetching: isFetchFollowProfile,
-    refetch: refetchFollowProfile,
-  } = useQuery<FollowToggleEntity>({
-    queryKey: ['followings'],
-    queryFn: async () => {
-      const response = await api.get(`/follows/${userId}/follow`);
+  const { data: userFollow, isFetching: isFetchFollowProfile } =
+    useQuery<FollowToggleEntity>({
+      queryKey: ['followings', userId],
+      enabled: !!userId,
+      queryFn: async () => {
+        const response = await api.get(`/follows/${userId}/follow`);
 
-      return response.data.data;
-    },
-  });
+        return response.data.data;
+      },
+    });
 
   const {
     data: threadImages,
     isLoading: isLoadingImages,
-    refetch: refetchProfileImages,
     isError: isErrorImages,
     failureReason: failureReasonImages,
   } = useQuery<Thread[]>({
-    queryKey: ['threadImages'],
+    queryKey: ['threadImages', userId],
+    enabled: !!userId,
     queryFn: async () => {
       const response = await api.get(`/threads/${userId}/images`);
 
       return response.data.data;
     },
   });
-
-  useEffect(() => {
-    if (userId) {
-      refetchFollow();
-      refetchThreads();
-      refetchFollowProfile();
-      refetchProfileImages();
-    }
-  }, [
-    userId,
-    refetchFollow,
-    refetchThreads,
-    refetchFollowProfile,
-    refetchProfileImages,
-  ]);
 
   const buttonStyling: React.CSSProperties = {
     position: 'relative',

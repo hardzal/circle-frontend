@@ -7,7 +7,6 @@ import ButtonUnfollow from './components/button-unfollow';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 import { Link } from 'react-router-dom';
 import { ProfileEntity } from '@/entities/profile.entity';
-import { useEffect } from 'react';
 
 interface FollowData {
   title: string;
@@ -23,21 +22,15 @@ export default function FollowingList({ title, profile }: FollowData) {
     isLoading,
     isError,
     failureReason,
-    refetch: refetchFollowing,
   } = useQuery<FollowToggleEntity[]>({
-    queryKey: ['followings'],
+    queryKey: ['followings', userId],
+    enabled: !!userId,
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followings`);
 
       return response.data.data;
     },
   });
-
-  useEffect(() => {
-    if (userId) {
-      refetchFollowing();
-    }
-  }, [userId, refetchFollowing]);
 
   return (
     <Card.Root size="sm" backgroundColor={'background'}>

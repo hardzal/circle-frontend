@@ -8,7 +8,6 @@ import ButtonFollow from './components/button-follow';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 import { Link } from 'react-router-dom';
 import { ProfileEntity } from '@/entities/profile.entity';
-import { useEffect } from 'react';
 
 interface FollowData {
   title: string;
@@ -24,9 +23,10 @@ export default function FollowedList({ title, profile }: FollowData) {
     isLoading,
     isError,
     failureReason,
-    refetch: refetchFollowers,
+    // refetch: refetchFollowers,
   } = useQuery<FollowToggleEntity[]>({
-    queryKey: ['followers'],
+    queryKey: ['followers', userId],
+    enabled: !!userId,
     queryFn: async () => {
       const response = await api.get(`/follows/${userId}/followers`);
 
@@ -34,11 +34,11 @@ export default function FollowedList({ title, profile }: FollowData) {
     },
   });
 
-  useEffect(() => {
-    if (userId) {
-      refetchFollowers();
-    }
-  }, [userId, refetchFollowers]);
+  // useEffect(() => {
+  //   if (userId) {
+  //     refetchFollowers();
+  //   }
+  // }, [userId, refetchFollowers]);
 
   return (
     <Card.Root size="sm" backgroundColor={'background'}>
