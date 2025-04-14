@@ -23,7 +23,6 @@ export default function FollowedList({ title, profile }: FollowData) {
     isLoading,
     isError,
     failureReason,
-    // refetch: refetchFollowers,
   } = useQuery<FollowToggleEntity[]>({
     queryKey: ['followers', userId],
     enabled: !!userId,
@@ -33,12 +32,6 @@ export default function FollowedList({ title, profile }: FollowData) {
       return response.data.data;
     },
   });
-
-  // useEffect(() => {
-  //   if (userId) {
-  //     refetchFollowers();
-  //   }
-  // }, [userId, refetchFollowers]);
 
   return (
     <Card.Root size="sm" backgroundColor={'background'}>

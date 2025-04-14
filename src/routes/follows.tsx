@@ -11,31 +11,37 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function FollowsPage() {
   const usernameLogin = useAuthStore((state) => state.user).username;
-  const { username } = useParams() || usernameLogin;
+  const { username: usernameParam } = useParams();
+  const username = usernameParam ?? usernameLogin;
+
   const navigate = useNavigate();
 
-  const { data: profileData, isPending } = useQuery<ProfileEntity>({
-    queryKey: ['profileFollows'],
+  const {
+    data: profileData,
+    isPending,
+    isError,
+    failureReason,
+  } = useQuery<ProfileEntity>({
+    queryKey: ['profileFollows', username],
+    enabled: !!username,
     queryFn: async () => {
       const response = await api.get(`/users/${username}`);
-
-      const { profile } = response.data.data;
-
-      return profile;
+      console.log('data', response.data.data);
+      return response.data.data.profile;
     },
   });
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (profileData?.userId === undefined) {
-        navigate('/NotFound', { replace: true });
-      }
-    }, 1000);
-  }, [profileData, navigate]);
-
-  if (!profileData) {
-    return null;
+  if (isError) {
+    console.log(failureReason);
   }
+
+  console.log(profileData);
+
+  useEffect(() => {
+    if (!!username && !isPending && !profileData) {
+      navigate('/NotFound', { replace: true });
+    }
+  }, [username, isPending, profileData, navigate]);
 
   return (
     <Box display={'flex'} flexDirection={'column'}>
@@ -67,18 +73,22 @@ export default function FollowsPage() {
         </Tabs.List>
 
         <Tabs.Content value="followers">
-          <FollowedList
-            key="1"
-            title="Followers Data"
-            profile={profileData as ProfileEntity}
-          />
+          {profileData?.userId && (
+            <FollowedList
+              key="1"
+              title="Followers Data"
+              profile={profileData as ProfileEntity}
+            />
+          )}
         </Tabs.Content>
         <Tabs.Content value="followings">
-          <FollowingList
-            key="2"
-            title="Followings data"
-            profile={profileData as ProfileEntity}
-          />
+          {profileData?.userId && (
+            <FollowingList
+              key="2"
+              title="Followings data"
+              profile={profileData as ProfileEntity}
+            />
+          )}
         </Tabs.Content>
       </Tabs.Root>
     </Box>
