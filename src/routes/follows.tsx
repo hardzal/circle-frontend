@@ -26,22 +26,19 @@ export default function FollowsPage() {
     enabled: !!username,
     queryFn: async () => {
       const response = await api.get(`/users/${username}`);
-      console.log('data', response.data.data);
       return response.data.data.profile;
     },
   });
-
-  if (isError) {
-    console.log(failureReason);
-  }
-
-  console.log(profileData);
 
   useEffect(() => {
     if (!!username && !isPending && !profileData) {
       navigate('/NotFound', { replace: true });
     }
   }, [username, isPending, profileData, navigate]);
+
+  if (isError) {
+    return failureReason?.message;
+  }
 
   return (
     <Box display={'flex'} flexDirection={'column'}>
