@@ -2,6 +2,7 @@ import { Box, Card, Heading, Text, Image } from '@chakra-ui/react';
 import { api } from '@/libs/api';
 import { useQuery } from '@tanstack/react-query';
 import ProfileEdit from '@/features/profile/components/profile-edit';
+import { Link } from 'react-router-dom';
 
 interface UserProfile {
   email: string;
@@ -82,16 +83,26 @@ export default function ProfileSidebar({
 
           <Box display={'flex'} flexDirection={'column'} gap={'5px'}>
             <Text>{profile.fullName}</Text>
-            <Text color={'secondary'}>@{username}</Text>
+            <Link to={`/profile/${username}`}>
+              <Text color={'secondary'}>@{username}</Text>
+            </Link>
             <Text>{profile.bio}</Text>
             <Box display={'flex'} gap={'5px'}>
               <Box display={'flex'} gap={'5px'} marginRight={'5px'}>
-                <Text fontWeight={'bold'}>{data?.followingCount}</Text>
-                <Text color={'secondary'}>Following</Text>
+                <Link to={`/follows/${username}`}>
+                  <Text fontWeight={'bold'}>{data?.followingCount}</Text>
+                </Link>
+                <Link to={`/follows/${username}`}>
+                  <Text color={'secondary'}>Following</Text>
+                </Link>
               </Box>
               <Box display={'flex'} gap={'5px'}>
-                <Text fontWeight={'bold'}>{data?.followerCount}</Text>
-                <Text color={'secondary'}>Followers</Text>
+                <Link to={`/follows/${username}`}>
+                  <Text fontWeight={'bold'}>{data?.followerCount}</Text>
+                </Link>
+                <Link to={`/follows/${username}`}>
+                  <Text color={'secondary'}>Followers</Text>
+                </Link>
               </Box>
             </Box>
           </Box>

@@ -6,6 +6,7 @@ import { api } from '@/libs/api';
 import ButtonFollow from '@/features/follows/components/button-follow';
 import { FollowToggleEntity } from '@/entities/followtoggle.entity';
 import { useAuthStore } from '@/stores/auth';
+import { Link } from 'react-router-dom';
 
 export default function FollowsSidebar({ background = 'background' }) {
   const {
@@ -56,9 +57,11 @@ export default function FollowsSidebar({ background = 'background' }) {
                 />
                 <Box display={'flex'} flexDirection={'column'} flex={'2'}>
                   <Text>{searchUserData.following?.profile?.fullName}</Text>
-                  <Text color={'secondary'}>
-                    @{searchUserData.following?.username}
-                  </Text>
+                  <Link to={`/profile/${searchUserData.following?.username}`}>
+                    <Text color={'secondary'}>
+                      @{searchUserData.following?.username}
+                    </Text>
+                  </Link>
                 </Box>
                 <ButtonFollow
                   userId={userId}
