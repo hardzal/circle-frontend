@@ -25,8 +25,6 @@ export default function SearchUsers() {
     queryFn: async () => {
       const response = await api.get(`/users/search?q=${searchTextDebounced}`);
 
-      console.log(response.data.data);
-
       return response.data.data;
     },
   });

@@ -59,6 +59,14 @@ export default function SearchUserCard({
       await queryClient.invalidateQueries({
         queryKey: ['search-users'],
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['followers'],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['followings'],
+      });
     },
   });
 

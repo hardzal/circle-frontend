@@ -325,21 +325,33 @@ export default function CardThread(thread: Thread) {
               );
             }}
           >
-            <Editable.Preview w="3xl" />
-            <Field.Root invalid={!!errors.content?.message}>
-              <Editable.Textarea
-                w="3xl"
-                height={'100px'}
-                {...register('content')}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && e.ctrlKey) {
-                    e.preventDefault();
-                    e.currentTarget.blur(); // This will trigger onSubmit
-                  }
-                }}
-              />
-              <Field.ErrorText>{errors.content?.message}</Field.ErrorText>
-            </Field.Root>
+            <Box display={'flex'} flexDirection={'column'}>
+              {content !== '' && <Editable.Preview w="3xl" />}
+
+              {thread.images && (
+                <Image
+                  objectFit={'contain'}
+                  maxHeight={'300px'}
+                  maxWidth={'300px'}
+                  src={thread.images || ''}
+                />
+              )}
+              <Field.Root invalid={!!errors.content?.message} marginTop={'5px'}>
+                <Editable.Textarea
+                  w="2xl"
+                  height={'100px'}
+                  {...register('content')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                      e.preventDefault();
+                      e.currentTarget.blur(); // This will trigger onSubmit
+                    }
+                  }}
+                />
+                <Field.ErrorText>{errors.content?.message}</Field.ErrorText>
+              </Field.Root>
+            </Box>
+
             {profile.userId === thread.user?.id && isPendingEdit ? (
               <Spinner />
             ) : (
@@ -370,15 +382,6 @@ export default function CardThread(thread: Thread) {
             )}
           </Editable.Root>
         </form>
-
-        {thread.images && (
-          <Image
-            objectFit={'contain'}
-            maxHeight={'300px'}
-            maxWidth={'300px'}
-            src={thread.images || ''}
-          />
-        )}
         <Box display={'flex'}>
           <Button
             variant={'ghost'}
