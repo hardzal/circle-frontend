@@ -28,7 +28,8 @@ export default function ProfileUserPage() {
   const { username } = useParams();
 
   const { data: user, isFetching: isFetchingUser } = useQuery<UserProfile>({
-    queryKey: ['userProfile'],
+    queryKey: ['userProfile', username],
+    enabled: !!username,
     queryFn: async () => {
       const response = await api.get(`/users/${username}`);
 

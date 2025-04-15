@@ -54,6 +54,14 @@ export function useFollow(userId: string) {
         queryKey: ['followCount'],
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: ['userProfile'],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['userFollowCount'],
+      });
+
       return toaster.create({
         title: 'Done follow',
         type: 'success',
